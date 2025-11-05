@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Profile</title>
+<link rel="icon" href="/client_static/favicon.png" type="image/png">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* ✅ Premium Golden AI Theme */
+body {
+  background: black;
+  overflow-x: hidden;
+}
+
+/* ✅ Golden Neural Wave Background */
+.ai-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.7;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✅ Neural network pattern overlay */
+.ai-wave::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255,215,0,0.05) 0%, transparent 50%);
+  animation: neuralPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes neuralPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
+}
+
+/* ✅ Page container (full width now) */
+#page {
+  padding: 2rem;
+  padding-top: 4rem;
+  max-width: 100%;
+}
+
+/* ✅ Button Glow Pulse on Hover */
+.ai-btn {
+  border: 1px solid rgba(255,215,0,.6);
+  background: linear-gradient(135deg, #b8860b, #ffd700);
+  color: black; /* requested */
+  padding: .75rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .3s ease;
+  box-shadow: 0 0 8px rgba(255,215,0,.45);
+}
+
+.ai-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 18px rgba(255,215,0,.9), 0 0 36px rgba(255,215,0,.6);
+  animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+  50% { box-shadow: 0 0 22px rgba(255,215,0,1); }
+  100% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+}
+
+/* ✅ Random Page Transitions */
+.transition-wrapper {
+  opacity: 1;
+  animation-duration: .6s;
+  animation-fill-mode: forwards;
+}
+.fade { animation-name: fade; }
+.slide { animation-name: slide; }
+.blur { animation-name: blur; }
+.glass { animation-name: glass; }
+.zoom { animation-name: zoom; }
+
+@keyframes fade { from{opacity:0} to{opacity:1} }
+@keyframes slide {
+  from { opacity:0; transform: translateY(30px); }
+  to { opacity:1; transform: translateY(0); }
+}
+@keyframes blur {
+  from { filter: blur(12px); opacity:0; }
+  to { filter: blur(0); opacity:1; }
+}
+@keyframes glass {
+  from { backdrop-filter: blur(40px); opacity:0; }
+  to { backdrop-filter: blur(0); opacity:1; }
+}
+@keyframes zoom {
+  from { opacity:0; transform: scale(0.92); }
+  to { opacity:1; transform: scale(1); }
+}
+</style>
+</head>
+
+<body class="text-white">
+<div class="ai-wave"></div>
+
+<!-- ✅ Fixed Navigation Bar -->
+<div class="fixed top-0 left-0 w-full bg-black text-white shadow-md z-10 flex justify-between items-center p-4">
+  <h1 class="font-bold text-2xl flex items-center">
+    <img src="/client_static/favicon.png" alt="Favicon" class="h-8 w-10 mr-2">
+     NSFW-AI Hub
+  </h1>
+  <button id="logout" class="ai-btn">Logout</button>
+</div>
+
+<!-- ✅ Content Wrapper -->
+<div id="page" class="transition-wrapper">
+<a href="/dashboard" class="ai-btn mb-4 inline-block">← Back to Client Dashboard</a>
+<div class="max-w-4xl mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-4">Profile</h1>
+
+  <div class="grid md:grid-cols-2 gap-6">
+    <!-- Profile Info -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow space-y-4">
+      <div>Email: <span id="userEmail">user@example.com</span></div>
+
+      <!-- API Key -->
+      <div class="flex items-center space-x-2">
+        <span>API Key:</span>
+        <span id="apiKey">xxxx</span>
+
+        <button id="toggleBtn"
+          class="px-3 py-1 text-xs rounded-lg bg-gray-600 text-white hover:bg-gray-700 transition"
+          onclick="toggleApiKey()">
+          Show
+        </button>
+
+        <button id="copyBtn"
+          class="px-3 py-1 text-xs rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
+          onclick="copyApiKey()">
+          Copy
+        </button>
+      </div>
+
+      <div>Images Used: <span id="imgUsage">0</span>/50</div>
+      <div>Videos Used: <span id="vidUsage">0</span>/10</div>
+
+      <div class="mt-4">
+        <a href="/api_docs" class="bg-blue-600 px-3 py-1 rounded text-white hover:bg-blue-700">View API Docs</a>
+      </div>
+    </div>
+
+    <!-- Usage Chart -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+      <h3 class="text-xl font-semibold mb-4">Usage Overview</h3>
+      <div class="relative">
+        <canvas id="usageChart" style="max-width: 100%; height: auto;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-5 right-5  px-4 py-2 rounded-xl bg-gray-900 text-white shadow-lg text-sm opacity-0 translate-y-3 transition-all duration-300 flex items-center gap-2"></div>
+
+<script>
+let realApiKey = "";
+let apiVisible = false;
+let usageChart = null;
+
+async function loadProfileData() {
+  try {
+    const response = await fetch('/api/profile', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      document.getElementById('userEmail').textContent = data.email;
+      document.getElementById('imgUsage').textContent = data.image_usage;
+      document.getElementById('vidUsage').textContent = data.video_usage;
+
+      realApiKey = data.api_key ?? "";
+      const masked = realApiKey
+        ? realApiKey.slice(0,4) + "****" + realApiKey.slice(-4)
+        : "Not available";
+
+      document.getElementById('apiKey').textContent = masked;
+
+      // Update chart with usage data
+      updateUsageChart(data.image_usage, data.video_usage);
+
+    } else {
+      showToast("Failed to load profile data", true);
+    }
+  } catch (error) {
+    showToast("Error loading profile", true);
+  }
+}
+
+async function updateUsageChart() {
+  try {
+    const response = await fetch('/api/chart/profile_usage', {
+      method: 'GET',
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      const ctx = document.getElementById('usageChart').getContext('2d');
+
+      const chartData = {
+        labels: data.labels,
+        datasets: [{
+          data: data.values,
+          backgroundColor: ['#60A5FA', '#F87171'], // Light blue and light red
+          borderWidth: 2,
+          borderColor: '#ffffff'
+        }]
+      };
+
+      const config = {
+        type: 'pie',
+        data: chartData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                padding: 20,
+                usePointStyle: true
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.parsed;
+                  return `${label}: ${value}`;
+                }
+              }
+            }
+          }
+        }
+      };
+
+      if (usageChart) {
+        usageChart.destroy();
+      }
+      usageChart = new Chart(ctx, config);
+    }
+  } catch (error) {
+    console.error('Error loading usage chart data:', error);
+  }
+}
+
+function toggleApiKey() {
+  if (!realApiKey) return;
+
+  apiVisible = !apiVisible;
+
+  document.getElementById('apiKey').textContent = apiVisible 
+    ? realApiKey 
+    : realApiKey.slice(0,4) + "****" + realApiKey.slice(-4);
+
+  document.getElementById('toggleBtn').textContent = apiVisible ? "Hide" : "Show";
+
+  showToast(apiVisible ? "API key revealed" : "API key hidden");
+}
+
+function copyApiKey() {
+  if (!realApiKey) return;
+
+  navigator.clipboard.writeText(realApiKey).then(() => {
+    showToast("API key copied");
+  });
+}
+
+function showToast(message, error = false) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.remove('hidden');
+  toast.style.backgroundColor = error ? '#dc2626' : '#1f2937';
+
+  setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 2000);
+}
+
+loadProfileData();
+</script>
+
+<script>
+lucide.createIcons();
+
+const effects = ["fade", "slide", "blur", "glass", "zoom"];
+const page = document.getElementById("page");
+
+function applyRandomEffect(){
+  const effect = effects[Math.floor(Math.random()*effects.length)];
+  page.classList.remove(...effects);
+  page.classList.add(effect);
+}
+
+applyRandomEffect();
+
+document.addEventListener("click",(e)=>{
+  if(e.target.closest("a, button")){
+    page.style.opacity = 0;
+    setTimeout(()=> applyRandomEffect(), 200);
+  }
+});
+
+// Logout functionality
+document.getElementById('logout').onclick = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+  location.href = '/login';
+};
+</script>
+
+</body>
+</html>

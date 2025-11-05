@@ -1,7 +1,7 @@
 from fastapi import HTTPException, Request
 from fastapi.security import HTTPBearer
 from jose import jwt, JWTError
-from passlib.hash import bcrypt
+import bcrypt
 from .config import JWT_SECRET, ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_DAYS, ADMIN_EMAIL, USERS_FILE
 from .utils import read_json, write_json, ensure_json, now_iso
 from datetime import datetime, timedelta
@@ -31,6 +31,7 @@ def verify_token(request: Request):
         raise HTTPException(status_code=401, detail="Missing token")
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        app_logger.info("Token verified for user %s", payload.get("sub"))
         return payload
     except JWTError as e:
         app_logger.error("Token verify failed: %s", e)
@@ -48,8 +49,8 @@ def register_user(email, password, role="client"):
     users = read_json(USERS_FILE, [])
     if any(u.get("user") == email for u in users):
         raise HTTPException(status_code=400, detail="Already exists")
-    hashed = bcrypt.hash(password)
-    new = {"user": email, "password": hashed, "role": role, "status": "active", "api_key": "", "usage": {"images":0,"videos":0}, "refresh_tokens": []}
+    hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    new = {"user": email, "password": hashed, "role": role, "status": "active", "api_key": "", "usage": {"images":0,"videos":0}, "refresh_tokens": [], "created_at": now_iso(), "last_login": None}
     users.append(new)
     write_json(USERS_FILE, users)
     app_logger.info("Registered user %s", email)
@@ -57,12 +58,19 @@ def register_user(email, password, role="client"):
 
 def authenticate_user(email, password):
     user = get_user(email)
+    if not user and email == ADMIN_EMAIL:
+        user = register_user(email, password, role="admin")
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     if user.get("status") == "blocked":
         raise HTTPException(status_code=403, detail="Blocked")
-    if not bcrypt.verify(password, user.get("password")):
+    if not bcrypt.checkpw(password.encode('utf-8'), user.get("password").encode('utf-8')):
         raise HTTPException(status_code=401, detail="Invalid credentials")
+    # Set role based on email
+    if email == ADMIN_EMAIL:
+        user["role"] = "admin"
+    else:
+        user["role"] = "client"
     return user
 
 def revoke_refresh_token(email, token):

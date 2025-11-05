@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome Email</title>
+  <style>
+    body{font-family:sans-serif;background:#f9f9f9;color:#111;}
+    .container{max-width:600px;margin:auto;background:#fff;padding:20px;border-radius:8px;}
+    .btn{background:#3b82f6;color:#fff;padding:10px 20px;border-radius:5px;text-decoration:none;}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Welcome to NSFW AI Hub!</h1>
+  <p>Hello <strong>{{user_name}}</strong>,</p>
+  <p>Thank you for signing up. You can now upload images and videos for AI analysis.</p>
+  <p>Your API Key: <code>{{api_key}}</code></p>
+  <p><a href="{{login_url}}" class="btn">Go to Dashboard</a></p>
+  <p>Best,<br>NSFW AI Hub Team</p>
+</div>
+</body>
+</html>

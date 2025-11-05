@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard</title>
+<link rel="icon" href="/client_static/favicon.png" type="image/png">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* ✅ Premium Golden AI Theme */
+body {
+  background: black;
+  overflow-x: hidden;
+}
+
+/* ✅ Golden Neural Wave Background */
+.ai-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.7;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✅ Neural network pattern overlay */
+.ai-wave::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255,215,0,0.05) 0%, transparent 50%);
+  animation: neuralPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes neuralPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
+}
+
+/* ✅ Page container (full width now) */
+#page {
+  padding: 2rem;
+  max-width: 100%;
+}
+
+/* ✅ Button Glow Pulse on Hover */
+.ai-btn {
+  border: 1px solid rgba(255,215,0,.6);
+  background: linear-gradient(135deg, #b8860b, #ffd700);
+  color: black; /* requested */
+  padding: .75rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .3s ease;
+  box-shadow: 0 0 8px rgba(255,215,0,.45);
+}
+
+.ai-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 18px rgba(255,215,0,.9), 0 0 36px rgba(255,215,0,.6);
+  animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+  50% { box-shadow: 0 0 22px rgba(255,215,0,1); }
+  100% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+}
+
+/* ✅ Random Page Transitions */
+.transition-wrapper {
+  opacity: 1;
+  animation-duration: .6s;
+  animation-fill-mode: forwards;
+}
+.fade { animation-name: fade; }
+.slide { animation-name: slide; }
+.blur { animation-name: blur; }
+.glass { animation-name: glass; }
+.zoom { animation-name: zoom; }
+
+@keyframes fade { from{opacity:0} to{opacity:1} }
+@keyframes slide {
+  from { opacity:0; transform: translateY(30px); }
+  to { opacity:1; transform: translateY(0); }
+}
+@keyframes blur {
+  from { filter: blur(12px); opacity:0; }
+  to { filter: blur(0); opacity:1; }
+}
+@keyframes glass {
+  from { backdrop-filter: blur(40px); opacity:0; }
+  to { backdrop-filter: blur(0); opacity:1; }
+}
+@keyframes zoom {
+  from { opacity:0; transform: scale(0.92); }
+  to { opacity:1; transform: scale(1); }
+}
+</style>
+</head>
+
+<body class="text-white">
+<div class="ai-wave"></div>
+
+<!-- ✅ Fixed Navigation Bar -->
+<div class="fixed top-0 left-0 w-full bg-black text-white shadow-md z-10 flex justify-between items-center p-4">
+  <h1 class="font-bold text-2xl flex items-center">
+    <img src="/client_static/favicon.png" alt="Favicon" class="h-8 w-10 mr-2">
+     NSFW-AI Hub
+  </h1>
+  <button id="logout" class="ai-btn">Logout</button>
+</div>
+
+<!-- ✅ Content Wrapper -->
+<div id="page" class="transition-wrapper">
+<h2 class="text-2xl font-bold mb-6">🛠️ Admin Dashboard</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+  <a href="/manage_users" class="bg-blue-600 text-white rounded p-4 text-center hover:bg-blue-700">👥 Manage Users</a>
+  <a href="/manage_feedback" class="bg-purple-600 text-white rounded p-4 text-center hover:bg-purple-700">💬 Feedback Override</a>
+  <a href="/api_usage" class="bg-green-600 text-white rounded p-4 text-center hover:bg-green-700">📊 API Usage</a>
+</div>
+
+<section class="p-6 bg-gray-200 dark:bg-gray-800 rounded shadow mb-6">
+  <h3 class="text-lg font-semibold mb-4">Dataset Upload & Retrain</h3>
+  <form id="datasetForm" enctype="multipart/form-data">
+    <div class="mb-4">
+      <label for="safe" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Safe Zip:</label>
+      <input type="file" id="safe" name="safe" accept=".zip" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+    <div class="mb-4">
+      <label for="moderate" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Moderate Zip:</label>
+      <input type="file" id="moderate" name="moderate" accept=".zip" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+    <div class="mb-4">
+      <label for="high" class="block text-sm font-medium text-gray-700 dark:text-gray-300">High Zip:</label>
+      <input type="file" id="high" name="high" accept=".zip" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Upload Datasets</button>
+  </form>
+  <button id="retrainBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mt-4">Retrain Model</button>
+  <p id="uploadMsg" class="mt-2 text-sm text-gray-600 dark:text-gray-400"></p>
+  <p id="retrainMsg" class="mt-2 text-sm text-gray-600 dark:text-gray-400"></p>
+</section>
+
+<section class="p-6 bg-gray-200 dark:bg-gray-800 rounded shadow mb-6">
+  <h3 class="text-lg font-semibold mb-2">Usage Summary</h3>
+  <canvas id="adminChart"></canvas>
+</section>
+
+<section class="p-6 bg-gray-200 dark:bg-gray-800 rounded shadow">
+  <h3 class="text-lg font-semibold mb-2">API Calls vs Disagreements Over Time</h3>
+  <canvas id="overtimeChart"></canvas>
+</section>
+
+
+
+<script>
+async function uploadDatasets(event) {
+  event.preventDefault();
+  const formData = new FormData(document.getElementById("datasetForm"));
+  const res = await fetch("/admin/upload_dataset", {
+    method: "POST",
+    body: formData,
+    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+  });
+  const data = await res.json();
+  document.getElementById("uploadMsg").textContent = data.message || "Upload complete.";
+}
+
+async function retrainModel() {
+  const res = await fetch("/admin/manual_retrain", {
+    method: "POST",
+    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+  });
+  const data = await res.json();
+  document.getElementById("retrainMsg").textContent = data.message || "Retraining complete.";
+}
+
+async function loadAdminChart() {
+  try {
+    const res = await fetch("/api/chart/admin_dashboard_summary");
+    if (!res.ok) throw new Error("Failed to fetch chart data");
+    const chartData = await res.json();
+    const ctxA = document.getElementById("adminChart");
+    new Chart(ctxA, {
+      type: "bar",
+      data: {
+        labels: chartData.labels,
+        datasets: [{
+          label: "System Metrics",
+          data: chartData.data,
+          backgroundColor: "#93C5FD", // Light blue
+          borderColor: "#3B82F6", // Medium blue border
+          borderWidth: 1
+        }]
+      }
+    });
+  } catch (error) {
+    console.error("Error loading admin chart:", error);
+  }
+}
+
+async function loadOvertimeChart() {
+  try {
+    const res = await fetch("/api/chart/admin_usage_trends");
+    if (!res.ok) throw new Error("Failed to fetch overtime chart data");
+    const chartData = await res.json();
+    const ctxO = document.getElementById("overtimeChart");
+    new Chart(ctxO, {
+      type: "line",
+      data: {
+        labels: chartData.labels,
+        datasets: [{
+          label: "API Calls",
+          data: chartData.api_calls,
+          borderColor: "#60A5FA", // Light blue
+          backgroundColor: "rgba(96, 165, 250, 0.2)",
+          fill: true
+        }, {
+          label: "Disagreements",
+          data: chartData.disagreements,
+          borderColor: "#F87171", // Light red
+          backgroundColor: "rgba(248, 113, 113, 0.2)",
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+              text: 'Date'
+            }
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: 'Count'
+            }
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.error("Error loading overtime chart:", error);
+  }
+}
+
+document.getElementById("datasetForm").addEventListener("submit", uploadDatasets);
+document.getElementById("retrainBtn").onclick = retrainModel;
+
+// Load charts on page load
+loadAdminChart();
+loadOvertimeChart();
+</script>
+</div>
+
+<script>
+lucide.createIcons();
+
+const effects = ["fade", "slide", "blur", "glass", "zoom"];
+const page = document.getElementById("page");
+
+function applyRandomEffect(){
+  const effect = effects[Math.floor(Math.random()*effects.length)];
+  page.classList.remove(...effects);
+  page.classList.add(effect);
+}
+
+applyRandomEffect();
+
+document.addEventListener("click",(e)=>{
+  if(e.target.closest("a, button")){
+    page.style.opacity = 0;
+    setTimeout(()=> applyRandomEffect(), 200);
+  }
+});
+
+// Logout functionality
+document.getElementById('logout').onclick = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+  location.href = '/login';
+};
+</script>
+
+</body>
+</html>

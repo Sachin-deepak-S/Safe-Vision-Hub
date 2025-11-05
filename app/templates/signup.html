@@ -1,0 +1,41 @@
+{% extends "base_auth.html" %}
+{% block content %}
+
+  <!-- Centered Main Section -->
+  <main class="flex items-center justify-center min-h-screen">
+    <div class="form-container text-center p-8 rounded-2xl shadow-lg backdrop-blur-lg bg-white/10">
+      <!-- Bigger Header -->
+      <h1 class="text-5xl font-extrabold text-white mb-8 tracking-wide">
+        🧾 Sign Up
+      </h1>
+
+      <form id="signupForm" class="flex flex-col space-y-4">
+        <input id="email" name="email" type="email" placeholder="Email" required
+          class="p-3 rounded-lg bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        <input id="password" name="password" type="password" placeholder="Password" required
+          class="p-3 rounded-lg bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        <button type="submit"
+          class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 rounded-lg transition-all duration-300">
+          Sign Up
+        </button>
+      </form>
+
+      <button class="mt-6 text-indigo-200 hover:text-indigo-400 underline transition-all"
+        onclick="window.location.href='/login'">
+        Already have an account? Login
+      </button>
+    </div>
+  </main>
+
+  <!-- Error Popup -->
+  <div id="errorPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full mx-4">
+      <h2 class="text-xl font-bold mb-4 text-red-600">Signup Failed</h2>
+      <p id="errorMessage" class="text-gray-700 mb-4"></p>
+      <button onclick="closePopup()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Close</button>
+    </div>
+  </div>
+
+
+
+{% endblock %}

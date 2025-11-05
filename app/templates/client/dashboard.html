@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Client Dashboard</title>
+<link rel="icon" href="/client_static/favicon.png" type="image/png">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* ✅ Premium Golden AI Theme */
+body {
+  background: black;
+  overflow-x: hidden;
+}
+
+/* ✅ Golden Neural Wave Background */
+.ai-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.7;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✅ Neural network pattern overlay */
+.ai-wave::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255,215,0,0.05) 0%, transparent 50%);
+  animation: neuralPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes neuralPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
+}
+
+/* ✅ Page container (full width now) */
+#page {
+  padding: 2rem;
+  max-width: 100%;
+}
+
+/* ✅ Button Glow Pulse on Hover */
+.ai-btn {
+  border: 1px solid rgba(255,215,0,.6);
+  background: linear-gradient(135deg, #b8860b, #ffd700);
+  color: black; /* requested */
+  padding: .75rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .3s ease;
+  box-shadow: 0 0 8px rgba(255,215,0,.45);
+}
+
+.ai-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 18px rgba(255,215,0,.9), 0 0 36px rgba(255,215,0,.6);
+  animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+  50% { box-shadow: 0 0 22px rgba(255,215,0,1); }
+  100% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+}
+
+/* ✅ Random Page Transitions */
+.transition-wrapper {
+  opacity: 1;
+  animation-duration: .6s;
+  animation-fill-mode: forwards;
+}
+.fade { animation-name: fade; }
+.slide { animation-name: slide; }
+.blur { animation-name: blur; }
+.glass { animation-name: glass; }
+.zoom { animation-name: zoom; }
+
+@keyframes fade { from{opacity:0} to{opacity:1} }
+@keyframes slide {
+  from { opacity:0; transform: translateY(30px); }
+  to { opacity:1; transform: translateY(0); }
+}
+@keyframes blur {
+  from { filter: blur(12px); opacity:0; }
+  to { filter: blur(0); opacity:1; }
+}
+@keyframes glass {
+  from { backdrop-filter: blur(40px); opacity:0; }
+  to { backdrop-filter: blur(0); opacity:1; }
+}
+@keyframes zoom {
+  from { opacity:0; transform: scale(0.92); }
+  to { opacity:1; transform: scale(1); }
+}
+</style>
+</head>
+
+<body class="text-white">
+<div class="ai-wave"></div>
+
+<!-- ✅ Fixed Navigation Bar -->
+<div class="fixed top-0 left-0 w-full bg-black text-white shadow-md z-10 flex justify-between items-center p-4">
+  <h1 class="font-bold text-2xl flex items-center">
+    <img src="/client_static/favicon.png" alt="Favicon" class="h-8 w-10 mr-2">
+     NSFW-AI Hub
+  </h1>
+  <div>
+    <a href="/profile" class="ai-btn mr-2">Profile</a>
+    <a href="/reports" class="ai-btn mr-2">Reports</a>
+    <button id="themeToggle" class="ai-btn mr-2">Toggle Theme</button>
+    <button id="logout" class="ai-btn">Logout</button>
+  </div>
+</div>
+
+<!-- ✅ Content Wrapper -->
+<div id="page" class="transition-wrapper">
+<div class="p-6">
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-bold">Client Dashboard</h1>
+  </div>
+
+  <div class="mt-6 bg-gray-200 dark:bg-gray-800 rounded shadow p-4">
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Upload image / video</label>
+    <input id="file" type="file" class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    <button id="upload" class="mt-2 bg-sky-500 text-white px-4 py-2 rounded hover:bg-sky-700">Upload & Analyze</button>
+  </div>
+
+  <div id="result" class="mt-4 bg-gray-200 dark:bg-gray-800 rounded shadow p-4 hidden">
+    <h3 class="font-semibold">Result</h3>
+    <div id="predictionDisplay" class="mt-2"></div>
+    <div id="feedbackSection" class="mt-4 hidden">
+      <p class="text-sm mb-2">How was this prediction?</p>
+      <button id="feedbackPerfect" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded mr-2">Perfect</button>
+      <button id="feedbackOkay" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded mr-2">Okay</button>
+      <button id="feedbackWrong" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded">Wrong</button>
+    </div>
+    <div id="correctLabelSection" class="mt-4 hidden">
+      <p class="text-sm mb-2">Please select the correct label:</p>
+      <button id="labelSafe" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded mr-2">Safe</button>
+      <button id="labelModerate" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded mr-2">Moderate</button>
+      <button id="labelHigh" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded">High</button>
+    </div>
+    <div id="feedbackStatus" class="mt-2 text-sm"></div>
+  </div>
+
+  <div class="mt-6 bg-gray-200 dark:bg-gray-800 rounded shadow p-4">
+    <h3 class="font-semibold">History</h3>
+    <pre id="history" class="mt-2 bg-gray-100 dark:bg-gray-900 p-2 rounded text-sm"></pre>
+  </div>
+
+  <div class="mt-6 bg-gray-200 dark:bg-gray-800 rounded shadow p-4">
+    <h3 class="font-semibold mb-4">Prediction History</h3>
+    <div class="relative">
+      <canvas id="predictionChart" style="max-width: 100%; height: auto;"></canvas>
+    </div>
+  </div>
+
+  <div class="mt-6 bg-gray-200 dark:bg-gray-800 rounded shadow p-4">
+    <h3 class="font-semibold mb-4">Recent Feedback</h3>
+    <div id="recentFeedback">
+      <p class="text-gray-400">Loading recent feedback...</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) location.href = "/login";
+
+document.getElementById('upload').onclick = async () => {
+  const f = document.getElementById('file').files[0];
+  if (!f) return alert('Select file');
+  const fd = new FormData();
+  fd.append('file', f);
+  fd.append('user_id', 'client_user');
+  const res = await fetch('/api/predict', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token },
+    body: fd
+  });
+  const j = await res.json();
+  if (!res.ok) return alert(j.detail || 'Failed');
+  document.getElementById('result').classList.remove('hidden');
+  const predictionDisplay = document.getElementById('predictionDisplay');
+  const feedbackSection = document.getElementById('feedbackSection');
+  const feedbackStatus = document.getElementById('feedbackStatus');
+  feedbackStatus.innerHTML = '';
+  if (j.ask_preference) {
+    predictionDisplay.innerHTML = `Please choose your preferred AI model:<br>
+      <button id="chooseMyModel" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">My Model</button>
+      <button id="chooseOthersModel" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Other's Model</button>`;
+    feedbackSection.classList.add('hidden');
+    document.getElementById('chooseMyModel').addEventListener('click', () => submitPreference('My Model', j.feedback_id, j.file_saved));
+    document.getElementById('chooseOthersModel').addEventListener('click', () => submitPreference("Other's Model", j.feedback_id, j.file_saved));
+  } else {
+    const label = j.primary.label.toUpperCase();
+    const confidence = (j.primary.confidence * 100).toFixed(1);
+    predictionDisplay.innerHTML = `Prediction: <b>${label}</b> (Confidence: ${confidence}%)`;
+    feedbackSection.classList.remove('hidden');
+    // Add event listeners for feedback buttons
+    document.getElementById('feedbackPerfect').addEventListener('click', () => submitFeedback(j.feedback_id, 'perfect'));
+    document.getElementById('feedbackOkay').addEventListener('click', () => submitFeedback(j.feedback_id, 'okay'));
+    document.getElementById('feedbackWrong').addEventListener('click', () => submitFeedback(j.feedback_id, 'wrong'));
+  }
+  // append to history display (simple)
+  const hist = document.getElementById('history');
+  hist.innerText = (j.id || '') + "\n" + (hist.innerText || '');
+};
+
+document.getElementById('themeToggle').onclick = () => {
+  document.body.classList.toggle('bg-white');
+  document.body.classList.toggle('text-black');
+};
+
+// Load prediction stats for chart
+async function loadPredictionStats() {
+  try {
+    const response = await fetch('/api/chart/prediction_stats', {
+      method: 'GET',
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      updatePredictionChart(data.labels || [], data.data || []);
+    }
+  } catch (error) {
+    console.error('Error loading prediction stats:', error);
+  }
+}
+
+function updatePredictionChart(labels, data) {
+  const ctx = document.getElementById('predictionChart').getContext('2d');
+
+  const chartData = {
+    labels: labels,
+    datasets: [{
+      label: 'Predictions',
+      data: data,
+      borderColor: '#60A5FA', // Light blue
+      backgroundColor: 'rgba(96, 165, 250, 0.2)',
+      borderWidth: 2,
+      fill: true,
+      tension: 0.4
+    }]
+  };
+
+  const config = {
+    type: 'line',
+    data: chartData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return `Predictions: ${context.parsed.y}`;
+            }
+          }
+        }
+      }
+    }
+  };
+
+  new Chart(ctx, config);
+}
+
+// Load stats on page load
+loadPredictionStats();
+
+function submitFeedback(feedbackId, chosen) {
+  const formData = new FormData();
+  formData.append("feedback_id", feedbackId);
+  formData.append("chosen", chosen);
+
+  if (chosen === 'wrong') {
+    // Hide feedback section and show correct label selection
+    document.getElementById('feedbackSection').classList.add('hidden');
+    document.getElementById('correctLabelSection').classList.remove('hidden');
+    // Add event listeners for correct label buttons
+    document.getElementById('labelSafe').addEventListener('click', () => submitCorrectLabel(feedbackId, 'safe'));
+    document.getElementById('labelModerate').addEventListener('click', () => submitCorrectLabel(feedbackId, 'moderate'));
+    document.getElementById('labelHigh').addEventListener('click', () => submitCorrectLabel(feedbackId, 'high'));
+    return; // Don't submit yet
+  }
+
+  fetch('/api/feedback', {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  })
+  .then(response => {
+    if (response.ok) {
+      const feedbackStatus = document.getElementById('feedbackStatus');
+      feedbackStatus.innerHTML = '✅ Feedback submitted! Thank you.';
+      // Disable buttons after submission
+      document.getElementById('feedbackPerfect').disabled = true;
+      document.getElementById('feedbackOkay').disabled = true;
+      document.getElementById('feedbackWrong').disabled = true;
+    } else {
+      alert('Failed to submit feedback');
+    }
+  })
+  .catch(error => console.error('Error submitting feedback:', error));
+}
+
+function submitCorrectLabel(feedbackId, correctLabel) {
+  const formData = new FormData();
+  formData.append("feedback_id", feedbackId);
+  formData.append("chosen", 'wrong');
+  formData.append('correct_label', correctLabel);
+
+  fetch('/api/feedback', {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  })
+  .then(response => {
+    if (response.ok) {
+      const feedbackStatus = document.getElementById('feedbackStatus');
+      feedbackStatus.innerHTML = '✅ Feedback submitted! Thank you.';
+      // Disable buttons after submission
+      document.getElementById('feedbackPerfect').disabled = true;
+      document.getElementById('feedbackOkay').disabled = true;
+      document.getElementById('feedbackWrong').disabled = true;
+      document.getElementById('labelSafe').disabled = true;
+      document.getElementById('labelModerate').disabled = true;
+      document.getElementById('labelHigh').disabled = true;
+    } else {
+      alert('Failed to submit feedback');
+    }
+  })
+  .catch(error => console.error('Error submitting feedback:', error));
+}
+
+async function submitPreference(preferred, feedbackId, fileName) {
+  const formData = new FormData();
+  formData.append("preferred", preferred);
+  formData.append("file_name", fileName);
+
+  try {
+    const response = await fetch('/api/preference', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      // Display the prediction result
+      const predictionDisplay = document.getElementById('predictionDisplay');
+      const label = data.primary.label.toUpperCase();
+      const confidence = (data.primary.confidence * 100).toFixed(1);
+      predictionDisplay.innerHTML = `Prediction: <b>${label}</b> (Confidence: ${confidence}%)`;
+      // Show feedback section
+      document.getElementById('feedbackSection').classList.remove('hidden');
+      // Add event listeners for feedback buttons
+      document.getElementById('feedbackPerfect').addEventListener('click', () => submitFeedback(data.feedback_id, 'perfect'));
+      document.getElementById('feedbackOkay').addEventListener('click', () => submitFeedback(data.feedback_id, 'okay'));
+      document.getElementById('feedbackWrong').addEventListener('click', () => submitFeedback(data.feedback_id, 'wrong'));
+      const feedbackStatus = document.getElementById('feedbackStatus');
+      feedbackStatus.innerHTML = `✅ Preference recorded! Thank you for your feedback.`;
+    } else {
+      alert('Failed to submit preference');
+    }
+  } catch (error) {
+    console.error('Error submitting preference:', error);
+  }
+}
+
+// Load recent feedback
+async function loadRecentFeedback() {
+  try {
+    const response = await fetch('/api/recent_feedback', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      const recentFeedbackDiv = document.getElementById('recentFeedback');
+      if (data.length > 0) {
+        recentFeedbackDiv.innerHTML = data.map(fb => `
+          <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded mb-2">
+            <div class="text-sm">
+              <strong>${fb.user_feedback_ts || fb.ts}</strong> - Feedback: ${fb.chosen}
+              ${fb.primary ? `- Prediction: ${fb.primary.label} (${(fb.primary.confidence * 100).toFixed(1)}%)` : ''}
+            </div>
+          </div>
+        `).join('');
+      } else {
+        recentFeedbackDiv.innerHTML = '<p class="text-gray-400">No recent feedback available.</p>';
+      }
+    } else {
+      document.getElementById('recentFeedback').innerHTML = '<p class="text-gray-400">Failed to load recent feedback.</p>';
+    }
+  } catch (error) {
+    console.error('Error loading recent feedback:', error);
+    document.getElementById('recentFeedback').innerHTML = '<p class="text-gray-400">Error loading recent feedback.</p>';
+  }
+}
+
+// Load recent feedback on page load
+loadRecentFeedback();
+</script>
+
+<script>
+lucide.createIcons();
+
+const effects = ["fade", "slide", "blur", "glass", "zoom"];
+const page = document.getElementById("page");
+
+function applyRandomEffect(){
+  const effect = effects[Math.floor(Math.random()*effects.length)];
+  page.classList.remove(...effects);
+  page.classList.add(effect);
+}
+
+applyRandomEffect();
+
+document.addEventListener("click",(e)=>{
+  if(e.target.closest("a, button")){
+    page.style.opacity = 0;
+    setTimeout(()=> applyRandomEffect(), 200);
+  }
+});
+
+// Logout functionality
+document.getElementById('logout').onclick = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+  location.href = '/login';
+};
+</script>
+
+</body>
+</html>

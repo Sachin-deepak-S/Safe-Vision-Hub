@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard</title>
+<link rel="icon" href="/client_static/favicon.png" type="image/png">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* ✅ Premium Golden AI Theme */
+body {
+  background: black;
+  overflow-x: hidden;
+}
+
+/* ✅ Golden Neural Wave Background */
+.ai-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.7;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✅ Neural network pattern overlay */
+.ai-wave::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255,215,0,0.05) 0%, transparent 50%);
+  animation: neuralPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes neuralPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
+}
+
+/* ✅ Page container (full width now) */
+#page {
+  padding: 2rem;
+  max-width: 100%;
+}
+
+/* ✅ Button Glow Pulse on Hover */
+.ai-btn {
+  border: 1px solid rgba(255,215,0,.6);
+  background: linear-gradient(135deg, #b8860b, #ffd700);
+  color: black; /* requested */
+  padding: .75rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .3s ease;
+  box-shadow: 0 0 8px rgba(255,215,0,.45);
+}
+
+.ai-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 18px rgba(255,215,0,.9), 0 0 36px rgba(255,215,0,.6);
+  animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+  50% { box-shadow: 0 0 22px rgba(255,215,0,1); }
+  100% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+}
+
+/* ✅ Random Page Transitions */
+.transition-wrapper {
+  opacity: 1;
+  animation-duration: .6s;
+  animation-fill-mode: forwards;
+}
+.fade { animation-name: fade; }
+.slide { animation-name: slide; }
+.blur { animation-name: blur; }
+.glass { animation-name: glass; }
+.zoom { animation-name: zoom; }
+
+@keyframes fade { from{opacity:0} to{opacity:1} }
+@keyframes slide {
+  from { opacity:0; transform: translateY(30px); }
+  to { opacity:1; transform: translateY(0); }
+}
+@keyframes blur {
+  from { filter: blur(12px); opacity:0; }
+  to { filter: blur(0); opacity:1; }
+}
+@keyframes glass {
+  from { backdrop-filter: blur(40px); opacity:0; }
+  to { backdrop-filter: blur(0); opacity:1; }
+}
+@keyframes zoom {
+  from { opacity:0; transform: scale(0.92); }
+  to { opacity:1; transform: scale(1); }
+}
+</style>
+</head>
+
+<body class="text-white">
+<div class="ai-wave"></div>
+
+<!-- ✅ Fixed Navigation Bar -->
+<div class="fixed top-0 left-0 w-full bg-black text-white shadow-md z-10 flex justify-between items-center p-4">
+  <h1 class="font-bold text-2xl flex items-center">
+    <img src="/client_static/favicon.png" alt="Favicon" class="h-8 w-10 mr-2">
+     NSFW-AI Hub
+  </h1>
+  <button id="logout" class="ai-btn">Logout</button>
+</div>
+
+<!-- ✅ Content Wrapper -->
+<div id="page" class="transition-wrapper">
+<h1 class="text-3xl font-bold mb-6 text-center">Admin Dashboard</h1>
+
+<!-- API Key Management -->
+<section class="bg-gray-800 p-4 rounded-xl mb-8 shadow-lg">
+  <h2 class="text-xl font-semibold mb-3">API Clients</h2>
+  <table class="w-full text-sm text-gray-300">
+    <thead><tr class="border-b border-gray-600">
+      <th>Email</th><th>Status</th><th>Quota</th><th>Actions</th>
+    </tr></thead>
+    <tbody id="client-table"></tbody>
+  </table>
+</section>
+
+<!-- Feedback Review -->
+<section class="bg-gray-800 p-4 rounded-xl mb-8 shadow-lg">
+  <h2 class="text-xl font-semibold mb-3">Feedback Review</h2>
+  <div id="feedback-list" class="space-y-2"></div>
+</section>
+
+<!-- Manual Dataset Retrain -->
+<section class="bg-gray-800 p-4 rounded-xl mb-8 shadow-lg">
+  <h2 class="text-xl font-semibold mb-3">Manual Dataset Retrain</h2>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-2">Upload NSFW Dataset (nsfw.zip)</label>
+      <input type="file" name="nsfw" accept=".zip" class="block w-full text-sm text-gray-300 bg-gray-700 rounded border border-gray-600 focus:border-blue-500">
+    </div>
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-2">Upload Safe Dataset (safe.zip)</label>
+      <input type="file" name="safe" accept=".zip" class="block w-full text-sm text-gray-300 bg-gray-700 rounded border border-gray-600 focus:border-blue-500">
+    </div>
+    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Upload Datasets</button>
+  </form>
+  <div class="mt-4">
+    <button id="retrainBtn" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Retrain Model</button>
+  </div>
+  <div id="uploadStatus" class="mt-4 text-sm"></div>
+</section>
+
+<!-- Usage Chart -->
+<section class="bg-gray-800 p-4 rounded-xl shadow-lg">
+  <h2 class="text-xl font-semibold mb-3">API Usage Trends</h2>
+  <canvas id="usageChart" height="100"></canvas>
+</section>
+</div>
+
+<script>
+async function loadClients(){
+  const res = await fetch('/admin/data');
+  const data = await res.json();
+  const tbody = document.getElementById('client-table');
+  tbody.innerHTML = data.users.filter(u => u.role === 'client').map(u=>`
+    <tr class="border-b border-gray-700">
+      <td>${u.user}</td>
+      <td>${u.status}</td>
+      <td>${u.usage.images}/${5000} img,
+          ${u.usage.videos}/${100} vid</td>
+      <td>
+        <button class="px-2 py-1 bg-blue-600 rounded" onclick="toggleClient('${u.user}')">
+          ${u.status === 'active' ? 'Block' : 'Unblock'}
+        </button>
+      </td>
+    </tr>`).join('');
+}
+
+async function toggleClient(email){
+  // Determine action based on current status
+  const tbody = document.getElementById('client-table');
+  const row = Array.from(tbody.children).find(tr => tr.cells[0].textContent === email);
+  const status = row.cells[1].textContent;
+  const action = status === 'active' ? 'block' : 'unblock';
+  await fetch('/admin/toggle', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({email, action})
+  });
+  loadClients();
+}
+
+async function loadUsageChart(){
+  const response = await fetch('/api/chart/admin_usage_trends', {
+    method: 'GET',
+    credentials: 'include'
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    const ctx = document.getElementById('usageChart');
+    new Chart(ctx, {
+      type:'line',
+      data:{
+        labels: data.labels,
+        datasets:[
+          {label:'API Calls', data:data.api_calls, borderColor:'#60A5FA', backgroundColor: 'rgba(96, 165, 250, 0.2)', fill: true},
+          {label:'Disagreements', data:data.disagreements, borderColor:'#F87171', backgroundColor: 'rgba(248, 113, 113, 0.2)', fill: true}
+        ]
+      },
+      options:{
+        responsive:true,
+        plugins:{legend:{labels:{color:'#ccc'}}},
+        scales:{
+          x:{ticks:{color:'#aaa'}},
+          y:{ticks:{color:'#aaa'}}
+        }
+      }
+    });
+  } else {
+    console.error('Failed to load usage chart data');
+  }
+}
+
+async function loadFeedback(){
+  const res = await fetch('/admin/data');
+  const data = await res.json();
+  const list = data.feedback;
+  const div = document.getElementById('feedback-list');
+  div.innerHTML = list.map(f=>`
+    <div class="bg-gray-700 p-3 rounded-md flex justify-between">
+      <div>
+        <p><strong>ID:</strong> ${f.id}</p>
+        <p>${f.path}</p>
+      </div>
+      <div>
+        <button onclick="approveFeedback('${f.id}')" class="px-3 py-1 bg-green-600 rounded">Approve</button>
+      </div>
+    </div>`).join('');
+}
+
+async function approveFeedback(id){
+  await fetch('/admin/approve', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({feedback_id: id})
+  });
+  loadFeedback();
+}
+
+async function uploadDatasets(event){
+  event.preventDefault();
+  const formData = new FormData(event.target);
+  const statusDiv = document.getElementById('uploadStatus');
+  statusDiv.textContent = 'Uploading...';
+  try {
+    const res = await fetch('/admin/upload_dataset', {
+      method: 'POST',
+      body: formData
+    });
+    const result = await res.json();
+    statusDiv.textContent = result.message || 'Upload successful';
+  } catch (error) {
+    statusDiv.textContent = 'Upload failed: ' + error.message;
+  }
+}
+
+async function retrainModel(){
+  const statusDiv = document.getElementById('uploadStatus');
+  statusDiv.textContent = 'Retraining...';
+  try {
+    const res = await fetch('/admin/manual_retrain', {
+      method: 'POST'
+    });
+    const result = await res.json();
+    statusDiv.textContent = result.message || 'Retraining completed';
+  } catch (error) {
+    statusDiv.textContent = 'Retraining failed: ' + error.message;
+  }
+}
+
+document.getElementById('uploadForm').addEventListener('submit', uploadDatasets);
+document.getElementById('retrainBtn').addEventListener('click', retrainModel);
+
+loadClients();
+loadUsageChart();
+loadFeedback();
+</script>
+
+<script>
+lucide.createIcons();
+
+const effects = ["fade", "slide", "blur", "glass", "zoom"];
+const page = document.getElementById("page");
+
+function applyRandomEffect(){
+  const effect = effects[Math.floor(Math.random()*effects.length)];
+  page.classList.remove(...effects);
+  page.classList.add(effect);
+}
+
+applyRandomEffect();
+
+document.addEventListener("click",(e)=>{
+  if(e.target.closest("a, button")){
+    page.style.opacity = 0;
+    setTimeout(()=> applyRandomEffect(), 200);
+  }
+});
+
+// Logout functionality
+document.getElementById('logout').onclick = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+  location.href = '/login';
+};
+</script>
+
+</body>
+</html>

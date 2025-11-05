@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Settings</title>
+<link rel="icon" href="/client_static/favicon.png" type="image/png">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+/* ✅ Premium Golden AI Theme */
+body {
+  background: black;
+  overflow-x: hidden;
+}
+
+/* ✅ Golden Neural Wave Background */
+.ai-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.7;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✅ Neural network pattern overlay */
+.ai-wave::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255,215,0,0.05) 0%, transparent 50%);
+  animation: neuralPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes neuralPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
+}
+
+/* ✅ Page container (full width now) */
+#page {
+  padding: 2rem;
+  max-width: 100%;
+}
+
+/* ✅ Button Glow Pulse on Hover */
+.ai-btn {
+  border: 1px solid rgba(255,215,0,.6);
+  background: linear-gradient(135deg, #b8860b, #ffd700);
+  color: black; /* requested */
+  padding: .75rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .3s ease;
+  box-shadow: 0 0 8px rgba(255,215,0,.45);
+}
+
+.ai-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 18px rgba(255,215,0,.9), 0 0 36px rgba(255,215,0,.6);
+  animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+  50% { box-shadow: 0 0 22px rgba(255,215,0,1); }
+  100% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+}
+
+/* ✅ Random Page Transitions */
+.transition-wrapper {
+  opacity: 1;
+  animation-duration: .6s;
+  animation-fill-mode: forwards;
+}
+.fade { animation-name: fade; }
+.slide { animation-name: slide; }
+.blur { animation-name: blur; }
+.glass { animation-name: glass; }
+.zoom { animation-name: zoom; }
+
+@keyframes fade { from{opacity:0} to{opacity:1} }
+@keyframes slide {
+  from { opacity:0; transform: translateY(30px); }
+  to { opacity:1; transform: translateY(0); }
+}
+@keyframes blur {
+  from { filter: blur(12px); opacity:0; }
+  to { filter: blur(0); opacity:1; }
+}
+@keyframes glass {
+  from { backdrop-filter: blur(40px); opacity:0; }
+  to { backdrop-filter: blur(0); opacity:1; }
+}
+@keyframes zoom {
+  from { opacity:0; transform: scale(0.92); }
+  to { opacity:1; transform: scale(1); }
+}
+</style>
+</head>
+
+<body class="text-white">
+<div class="ai-wave"></div>
+
+<!-- ✅ Fixed Navigation Bar -->
+<div class="fixed top-0 left-0 w-full bg-black text-white shadow-md z-10 flex justify-between items-center p-4">
+  <h1 class="font-bold text-2xl flex items-center">
+    <img src="/client_static/favicon.png" alt="Favicon" class="h-8 w-10 mr-2">
+     NSFW-AI Hub
+  </h1>
+  <button id="logout" class="ai-btn">Logout</button>
+</div>
+
+<!-- ✅ Content Wrapper -->
+<div id="page" class="transition-wrapper">
+<div class="max-w-4xl mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-4">System Settings</h1>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow mb-6">
+    <h2 class="text-xl font-semibold mb-2">Scheduler & Reports</h2>
+    <form id="settingsForm" class="space-y-4">
+      <label class="block">
+        Weekly Report Day:
+        <select name="report_day" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-2">
+          <option value="Monday">Monday</option>
+          <option value="Sunday">Sunday</option>
+        </select>
+      </label>
+
+      <label class="block">
+        Secondary Model Rotation (days):
+        <input type="number" name="model_rotation" min="1" value="7" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-2">
+      </label>
+
+      <label class="block">
+        API Image Quota:
+        <input type="number" name="image_quota" value="50" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-2">
+      </label>
+
+      <label class="block">
+        API Video Quota:
+        <input type="number" name="video_quota" value="10" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-2">
+      </label>
+
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Save Settings
+      </button>
+    </form>
+  </div>
+
+  <div class="flex justify-end">
+    <button id="toggleTheme" class="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded">
+      Toggle Dark/Light
+    </button>
+  </div>
+</div>
+</div>
+
+<script>
+document.getElementById('settingsForm').addEventListener('submit', e => {
+  e.preventDefault();
+  alert('Settings saved (mock).');
+});
+</script>
+
+<script>
+lucide.createIcons();
+
+const effects = ["fade", "slide", "blur", "glass", "zoom"];
+const page = document.getElementById("page");
+
+function applyRandomEffect(){
+  const effect = effects[Math.floor(Math.random()*effects.length)];
+  page.classList.remove(...effects);
+  page.classList.add(effect);
+}
+
+applyRandomEffect();
+
+document.addEventListener("click",(e)=>{
+  if(e.target.closest("a, button")){
+    page.style.opacity = 0;
+    setTimeout(()=> applyRandomEffect(), 200);
+  }
+});
+
+// Logout functionality
+document.getElementById('logout').onclick = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+  location.href = '/login';
+};
+</script>
+
+</body>
+</html>

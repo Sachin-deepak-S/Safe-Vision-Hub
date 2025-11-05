@@ -1,0 +1,10 @@
+{
+  "saved_at": "2025-10-29 22:21:18",
+  "samples": 4,
+  "epochs": 3,
+  "img_size": [
+    224,
+    224
+  ],
+  "base_model": "MobileNetV2"
+}

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Feedback Management</title>
+<link rel="icon" href="/client_static/favicon.png" type="image/png">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+/* ✅ Premium Golden AI Theme */
+body {
+  background: black;
+  overflow-x: hidden;
+}
+
+/* ✅ Golden Neural Wave Background */
+.ai-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.7;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✅ Neural network pattern overlay */
+.ai-wave::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255,215,0,0.05) 0%, transparent 50%);
+  animation: neuralPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes neuralPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
+}
+
+/* ✅ Page container (full width now) */
+#page {
+  padding: 2rem;
+  padding-top: 4rem;
+  max-width: 100%;
+}
+
+/* ✅ Button Glow Pulse on Hover */
+.ai-btn {
+  border: 1px solid rgba(255,215,0,.6);
+  background: linear-gradient(135deg, #b8860b, #ffd700);
+  color: black; /* requested */
+  padding: .75rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .3s ease;
+  box-shadow: 0 0 8px rgba(255,215,0,.45);
+}
+
+.ai-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 18px rgba(255,215,0,.9), 0 0 36px rgba(255,215,0,.6);
+  animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+  50% { box-shadow: 0 0 22px rgba(255,215,0,1); }
+  100% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+}
+
+/* ✅ Random Page Transitions */
+.transition-wrapper {
+  opacity: 1;
+  animation-duration: .6s;
+  animation-fill-mode: forwards;
+}
+.fade { animation-name: fade; }
+.slide { animation-name: slide; }
+.blur { animation-name: blur; }
+.glass { animation-name: glass; }
+.zoom { animation-name: zoom; }
+
+@keyframes fade { from{opacity:0} to{opacity:1} }
+@keyframes slide {
+  from { opacity:0; transform: translateY(30px); }
+  to { opacity:1; transform: translateY(0); }
+}
+@keyframes blur {
+  from { filter: blur(12px); opacity:0; }
+  to { filter: blur(0); opacity:1; }
+}
+@keyframes glass {
+  from { backdrop-filter: blur(40px); opacity:0; }
+  to { backdrop-filter: blur(0); opacity:1; }
+}
+@keyframes zoom {
+  from { opacity:0; transform: scale(0.92); }
+  to { opacity:1; transform: scale(1); }
+}
+</style>
+</head>
+
+<body class="text-white">
+<div class="ai-wave"></div>
+
+<!-- ✅ Fixed Navigation Bar -->
+<div class="fixed top-0 left-0 w-full bg-black text-white shadow-md z-10 flex justify-between items-center p-4">
+  <h1 class="font-bold text-2xl flex items-center">
+    <img src="/client_static/favicon.png" alt="Favicon" class="h-8 w-10 mr-2">
+     NSFW-AI Hub
+  </h1>
+  <button id="logout" class="ai-btn">Logout</button>
+</div>
+
+<!-- ✅ Content Wrapper -->
+<div id="page" class="transition-wrapper">
+<a href="/admin_dashboard" class="ai-btn mb-4 inline-block">← Back to Admin Dashboard</a>
+<h2 class="text-2xl font-bold mb-6">💬 Feedback Management</h2>
+<div id="feedbackList" class="space-y-4"></div>
+</div>
+
+<script>
+fetch("/admin/data")
+  .then(res=>res.json())
+  .then(data=>{
+    const container=document.getElementById("feedbackList");
+    container.innerHTML="";
+    data.feedback.forEach(f=>{
+      const feedbackType = f.chosen || "pending";
+      const typeColor = feedbackType === "perfect" ? "text-green-600" : feedbackType === "okay" ? "text-yellow-600" : feedbackType === "wrong" ? "text-red-600" : "text-gray-600";
+      const isLabeled = f.chosen !== null;
+      const isApproved = f.admin_approved;
+      container.innerHTML += `
+      <div class="p-4 bg-gray-200 dark:bg-gray-800 rounded shadow">
+        <p><strong>ID:</strong> ${f.id} | <strong>User:</strong> ${f.user} | <strong>Type:</strong> <span class="${typeColor}">${feedbackType}</span> ${isApproved ? "(Approved)" : ""}</p>
+        <p><strong>Path:</strong> ${f.path}</p>
+        <p><strong>Primary:</strong> ${f.primary.label} (${(f.primary.confidence*100).toFixed(1)}%)</p>
+        <p><strong>Secondary:</strong> ${f.secondary.label} (${(f.secondary.confidence*100).toFixed(1)}%)</p>
+        <p class="italic">${f.suggested_label || "No additional feedback"}</p>
+        <div class="mt-2">
+          <label class="block font-semibold">Label/Override Feedback Type:</label>
+          <select id="label_type_${f.id}" class="p-1 rounded border" onchange="toggleCorrectLabel('${f.id}')">
+            <option value="perfect" ${feedbackType === "perfect" ? "selected" : ""}>Perfect</option>
+            <option value="okay" ${feedbackType === "okay" ? "selected" : ""}>Okay</option>
+            <option value="wrong" ${feedbackType === "wrong" ? "selected" : ""}>Wrong</option>
+          </select>
+          <div id="correct_label_div_${f.id}" class="mt-2" style="display: ${feedbackType === "wrong" ? "block" : "none"};">
+            <label class="block font-semibold">Correct Label:</label>
+            <select id="correct_label_${f.id}" class="p-1 rounded border">
+              <option value="safe" ${f.correct_label === "safe" ? "selected" : ""}>Safe</option>
+              <option value="moderate" ${f.correct_label === "moderate" ? "selected" : ""}>Moderate</option>
+              <option value="high" ${f.correct_label === "high" ? "selected" : ""}>High</option>
+            </select>
+          </div>
+          <button onclick="labelFeedback('${f.id}')" class="ml-2 bg-blue-600 text-white py-1 px-3 rounded">Label</button>
+          <button onclick="approveFeedback('${f.id}')" class="ml-2 bg-green-600 text-white py-1 px-3 rounded">Approve & Retrain</button>
+        </div>
+      </div>`;
+    });
+  });
+
+function labelFeedback(id){
+  const labelType = document.getElementById("label_type_"+id).value;
+  const formData = new FormData();
+  formData.append('feedback_id', id);
+  formData.append('label', labelType);
+  fetch("/admin/label_feedback",{
+    method:"POST",
+    body: formData
+  }).then(res=>res.json()).then(data=>{
+    if(data.ok){
+      alert("Feedback labeled successfully!");
+      location.reload();
+    } else {
+      alert("Failed to label feedback");
+    }
+  });
+}
+
+function toggleCorrectLabel(id) {
+  const labelType = document.getElementById("label_type_"+id).value;
+  const correctLabelDiv = document.getElementById("correct_label_div_"+id);
+  if (labelType === "wrong") {
+    correctLabelDiv.style.display = "block";
+  } else {
+    correctLabelDiv.style.display = "none";
+  }
+}
+
+function approveFeedback(id){
+  const overrideType = document.getElementById("label_type_"+id).value;
+  const formData = new FormData();
+  formData.append('feedback_id', id);
+  formData.append('override_label', overrideType);
+  if (overrideType === "wrong") {
+    const correctLabel = document.getElementById("correct_label_"+id).value;
+    formData.append('correct_label', correctLabel);
+  }
+  fetch("/admin/approve",{
+    method:"POST",
+    body: formData
+  }).then(res=>res.json()).then(data=>{
+    if(data.ok){
+      alert("Feedback approved and added to retraining batch!");
+      location.reload();
+    } else {
+      alert("Failed to approve feedback");
+    }
+  });
+}
+</script>
+
+<script>
+lucide.createIcons();
+
+const effects = ["fade", "slide", "blur", "glass", "zoom"];
+const page = document.getElementById("page");
+
+function applyRandomEffect(){
+  const effect = effects[Math.floor(Math.random()*effects.length)];
+  page.classList.remove(...effects);
+  page.classList.add(effect);
+}
+
+applyRandomEffect();
+
+document.addEventListener("click",(e)=>{
+  if(e.target.closest("a, button")){
+    page.style.opacity = 0;
+    setTimeout(()=> applyRandomEffect(), 200);
+  }
+});
+
+// Logout functionality
+document.getElementById('logout').onclick = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+  location.href = '/login';
+};
+</script>
+
+</body>
+</html>

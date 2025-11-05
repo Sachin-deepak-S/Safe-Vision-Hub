@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Alert Notification</title>
+  <style>
+    /* General reset */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #111111;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Container */
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Alert box */
+    .alert {
+      background-color: #ef4444; /* Tailwind red-500 */
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    /* Text */
+    p {
+      line-height: 1.6;
+      font-size: 15px;
+      margin: 0 0 12px 0;
+    }
+
+    /* Button (optional) */
+    a.btn {
+      display: inline-block;
+      background-color: #2563eb; /* Tailwind blue-600 */
+      color: #ffffff !important;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 5px;
+      font-size: 15px;
+      margin-top: 12px;
+    }
+
+    /* Fallback for dark mode (email client dependent) */
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #1e1e1e; color: #f3f4f6; }
+      .container { background-color: #2d2d2d; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="font-size: 24px; margin-bottom: 12px;">⚠️ Alert</h1>
+    <div class="alert">
+      Your API quota has reached its limit or unusual activity detected.
+    </div>
+    <p>Please take appropriate action or contact support for assistance.</p>
+    <p>Best regards,<br><strong>NSFW AI Hub Team</strong></p>
+
+    <!-- Optional action button (rendered if dashboard_url provided) -->
+    <a href="{{ dashboard_url }}" class="btn">Go to Dashboard</a>
+  </div>
+</body>
+</html>

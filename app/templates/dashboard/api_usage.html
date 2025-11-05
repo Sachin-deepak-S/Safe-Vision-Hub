@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>API Usage</title>
+<link rel="icon" href="/client_static/favicon.png" type="image/png">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* ✅ Premium Golden AI Theme */
+body {
+  background: black;
+  overflow-x: hidden;
+}
+
+/* ✅ Golden Neural Wave Background */
+.ai-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.7;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✅ Neural network pattern overlay */
+.ai-wave::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255,215,0,0.05) 0%, transparent 50%);
+  animation: neuralPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes neuralPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
+}
+
+/* ✅ Page container (full width now) */
+#page {
+  padding: 2rem;
+  padding-top: 4rem;
+  max-width: 100%;
+}
+
+/* ✅ Button Glow Pulse on Hover */
+.ai-btn {
+  border: 1px solid rgba(255,215,0,.6);
+  background: linear-gradient(135deg, #b8860b, #ffd700);
+  color: black; /* requested */
+  padding: .75rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .3s ease;
+  box-shadow: 0 0 8px rgba(255,215,0,.45);
+}
+
+.ai-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 18px rgba(255,215,0,.9), 0 0 36px rgba(255,215,0,.6);
+  animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+  50% { box-shadow: 0 0 22px rgba(255,215,0,1); }
+  100% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+}
+
+/* ✅ Random Page Transitions */
+.transition-wrapper {
+  opacity: 1;
+  animation-duration: .6s;
+  animation-fill-mode: forwards;
+}
+.fade { animation-name: fade; }
+.slide { animation-name: slide; }
+.blur { animation-name: blur; }
+.glass { animation-name: glass; }
+.zoom { animation-name: zoom; }
+
+@keyframes fade { from{opacity:0} to{opacity:1} }
+@keyframes slide {
+  from { opacity:0; transform: translateY(30px); }
+  to { opacity:1; transform: translateY(0); }
+}
+@keyframes blur {
+  from { filter: blur(12px); opacity:0; }
+  to { filter: blur(0); opacity:1; }
+}
+@keyframes glass {
+  from { backdrop-filter: blur(40px); opacity:0; }
+  to { backdrop-filter: blur(0); opacity:1; }
+}
+@keyframes zoom {
+  from { opacity:0; transform: scale(0.92); }
+  to { opacity:1; transform: scale(1); }
+}
+</style>
+</head>
+
+<body class="text-white">
+<div class="ai-wave"></div>
+
+<!-- ✅ Fixed Navigation Bar -->
+<div class="fixed top-0 left-0 w-full bg-black text-white shadow-md z-10 flex justify-between items-center p-4">
+  <h1 class="font-bold text-2xl flex items-center">
+    <img src="/client_static/favicon.png" alt="Favicon" class="h-8 w-10 mr-2">
+     NSFW-AI Hub
+  </h1>
+  <button id="logout" class="ai-btn">Logout</button>
+</div>
+
+<!-- ✅ Content Wrapper -->
+<div id="page" class="transition-wrapper">
+<a href="/admin_dashboard" class="ai-btn mb-4 inline-block">← Back to Admin Dashboard</a>
+<div class="max-w-6xl mx-auto p-6">
+  <!-- Title -->
+  <h1 class="text-3xl font-bold mb-6 text-center">API Usage Dashboard</h1>
+
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow text-center">
+      <p class="text-gray-500 dark:text-gray-400">Total Users</p>
+      <p class="text-2xl font-bold text-blue-500" id="totalUsers">0</p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow text-center">
+      <p class="text-gray-500 dark:text-gray-400">Total API Calls</p>
+      <p class="text-2xl font-bold text-green-500" id="totalApiCalls">0</p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow text-center">
+      <p class="text-gray-500 dark:text-gray-400">Disagreements</p>
+      <p class="text-2xl font-bold text-red-500" id="totalDisagreements">0</p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow text-center">
+      <p class="text-gray-500 dark:text-gray-400">Active Keys</p>
+      <p class="text-2xl font-bold text-yellow-500" id="activeKeys">0</p>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+    <canvas id="apiUsageChart" class="w-full h-64"></canvas>
+  </div>
+
+  <!-- Data Table -->
+  <div class="mt-6 overflow-x-auto">
+    <table class="min-w-full bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
+      <thead class="bg-gray-200 dark:bg-gray-700">
+        <tr>
+          <th class="p-3 text-left">User</th>
+          <th class="p-3 text-left">API Calls</th>
+          <th class="p-3 text-left">Disagreements</th>
+          <th class="p-3 text-left">Image Used</th>
+          <th class="p-3 text-left">Video Used</th>
+          <th class="p-3 text-left">Status</th>
+        </tr>
+      </thead>
+      <tbody id="usageTable">
+        <!-- Data will be populated by JavaScript -->
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Fetch summary data
+  fetch('/admin/data')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('totalUsers').textContent = data.users.length;
+      document.getElementById('totalApiCalls').textContent = data.api_usage.total_calls || 0;
+      document.getElementById('totalDisagreements').textContent = data.api_usage.total_disagreements || 0;
+      document.getElementById('activeKeys').textContent = data.users.filter(u => u.status === 'active').length;
+
+      // Populate table
+      const tbody = document.getElementById('usageTable');
+      tbody.innerHTML = '';
+      data.users.forEach(client => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition';
+        tr.innerHTML = `
+          <td class="p-3">${client.user}</td>
+          <td class="p-3">${client.usage.api_calls || 0}</td>
+          <td class="p-3">${client.usage.disagreements || 0}</td>
+          <td class="p-3">${client.usage.images || 0}/5000</td>
+          <td class="p-3">${client.usage.videos || 0}/100</td>
+          <td class="p-3">
+            <span class="px-2 py-1 rounded-full text-sm 
+              ${client.status === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200' : 'bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200'}">
+              ${client.status.charAt(0).toUpperCase() + client.status.slice(1)}
+            </span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+
+  // Load chart
+  const ctx = document.getElementById('apiUsageChart');
+  if (ctx) {
+    fetch('/api/chart/api_usage', {
+      method: 'GET',
+      credentials: 'include'
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch chart data');
+      }
+      return response.json();
+    })
+    .then(data => {
+      const labels = data.labels;
+      const apiCalls = data.api_calls;
+      const disagreements = data.disagreements;
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'API Calls',
+              data: apiCalls,
+              backgroundColor: '#60A5FA', // Light blue
+              borderColor: '#60A5FA',
+              tension: 0.3,
+              fill: false
+            },
+            {
+              label: 'Disagreements',
+              data: disagreements,
+              backgroundColor: '#F87171', // Light red
+              borderColor: '#F87171',
+              tension: 0.3,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { color: getComputedStyle(document.documentElement).color }
+            },
+            title: {
+              display: true,
+              text: 'API Calls vs Disagreements Over Time',
+              color: '#d1d5db',
+              font: { size: 16, weight: 'bold' }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#d1d5db' },
+              grid: { color: 'rgba(75, 85, 99, 0.2)' }
+            },
+            y: {
+              ticks: { color: '#d1d5db' },
+              grid: { color: 'rgba(75, 85, 99, 0.2)' }
+            }
+          }
+        }
+      });
+
+    })
+    .catch(error => {
+      console.error('Error loading chart data:', error);
+    });
+  }
+});
+</script>
+
+<script>
+lucide.createIcons();
+
+const effects = ["fade", "slide", "blur", "glass", "zoom"];
+const page = document.getElementById("page");
+
+function applyRandomEffect(){
+  const effect = effects[Math.floor(Math.random()*effects.length)];
+  page.classList.remove(...effects);
+  page.classList.add(effect);
+}
+
+applyRandomEffect();
+
+document.addEventListener("click",(e)=>{
+  if(e.target.closest("a, button")){
+    page.style.opacity = 0;
+    setTimeout(()=> applyRandomEffect(), 200);
+  }
+});
+
+// Logout functionality
+document.getElementById('logout').onclick = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+  location.href = '/login';
+};
+</script>
+
+</body>
+</html>

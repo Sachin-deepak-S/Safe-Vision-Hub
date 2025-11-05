@@ -1,0 +1,127 @@
+/* Global Styles */
+body {
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated Gradient Background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(270deg, #4ade80, #16a34a, #22c55e, #10b981);
+  background-size: 800% 800%;
+  z-index: -1;
+  animation: gradientMove 20s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Particles */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+  animation: floatUp linear infinite;
+  transition: box-shadow 0.3s ease;
+}
+
+body.dark .particle {
+  background: rgba(16, 185, 129, 0.3); /* greenish glow */
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.7), 0 0 20px rgba(16, 185, 129, 0.5);
+}
+
+/* Form Gradient Background */
+.signup-gradient {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Input Fields */
+input {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ffffff;
+  color: #111827;
+  transition: all 0.3s ease-in-out;
+}
+
+input:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 5px #22c55e;
+}
+
+/* Button Styles */
+button {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  color: #fff;
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Notifications */
+.notification {
+  display: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.notification.show {
+  display: block;
+}
+
+.notification.success {
+  background-color: #22c55e;
+  color: #fff;
+}
+
+.notification.error {
+  background-color: #ef4444;
+  color: #fff;
+}
+
+/* Dark Mode Adjustments */
+body.dark input {
+  background-color: rgba(31, 41, 55, 0.9);
+  color: #f3f4f6;
+  border: 1px solid #f3f4f6;
+}
+
+body.dark button {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+body.dark button:hover {
+  background: linear-gradient(90deg, #059669, #10b981);
+}
+
+/* Smooth Transitions */
+input, button, .notification {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .signup-gradient {
+    padding: 1.5rem;
+  }
+}

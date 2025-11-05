@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Retrain NSFW Classifier</title>
+<link rel="icon" href="/client_static/favicon.png" type="image/png">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+/* ✅ Premium Golden AI Theme */
+body {
+  background: black;
+  overflow-x: hidden;
+}
+
+/* ✅ Golden Neural Wave Background */
+.ai-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.7;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✅ Neural network pattern overlay */
+.ai-wave::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255,215,0,0.05) 0%, transparent 50%);
+  animation: neuralPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes neuralPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
+}
+
+/* ✅ Page container (full width now) */
+#page {
+  padding: 2rem;
+  max-width: 100%;
+}
+
+/* ✅ Button Glow Pulse on Hover */
+.ai-btn {
+  border: 1px solid rgba(255,215,0,.6);
+  background: linear-gradient(135deg, #b8860b, #ffd700);
+  color: black; /* requested */
+  padding: .75rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .3s ease;
+  box-shadow: 0 0 8px rgba(255,215,0,.45);
+}
+
+.ai-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 18px rgba(255,215,0,.9), 0 0 36px rgba(255,215,0,.6);
+  animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+  50% { box-shadow: 0 0 22px rgba(255,215,0,1); }
+  100% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+}
+
+/* ✅ Random Page Transitions */
+.transition-wrapper {
+  opacity: 1;
+  animation-duration: .6s;
+  animation-fill-mode: forwards;
+}
+.fade { animation-name: fade; }
+.slide { animation-name: slide; }
+.blur { animation-name: blur; }
+.glass { animation-name: glass; }
+.zoom { animation-name: zoom; }
+
+@keyframes fade { from{opacity:0} to{opacity:1} }
+@keyframes slide {
+  from { opacity:0; transform: translateY(30px); }
+  to { opacity:1; transform: translateY(0); }
+}
+@keyframes blur {
+  from { filter: blur(12px); opacity:0; }
+  to { filter: blur(0); opacity:1; }
+}
+@keyframes glass {
+  from { backdrop-filter: blur(40px); opacity:0; }
+  to { backdrop-filter: blur(0); opacity:1; }
+}
+@keyframes zoom {
+  from { opacity:0; transform: scale(0.92); }
+  to { opacity:1; transform: scale(1); }
+}
+
+/* 🌈 Animated Gradient Background for Retrain */
+.retrain-bg {
+  height: 100vh;
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(-45deg, #5b86e5, #36d1dc, #ff6a00, #ee0979);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✨ Card Styling */
+.card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: white;
+  width: 420px;
+  padding: 2rem;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.btn-gradient {
+  background: linear-gradient(45deg, #36d1dc, #5b86e5);
+  border: none;
+  border-radius: 25px;
+  color: #fff;
+  font-weight: 600;
+  transition: 0.3s;
+  width: 100%;
+  padding: 0.75rem;
+}
+.btn-gradient:hover {
+  background: linear-gradient(45deg, #5b86e5, #36d1dc);
+  transform: scale(1.03);
+}
+
+.log-box {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  padding: 1rem;
+  height: 150px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+}
+</style>
+</head>
+
+<body class="retrain-bg">
+<div class="card">
+  <h2>🔁 Retrain NSFW Model</h2>
+
+  <button id="startRetrain" class="btn btn-gradient mb-3">🚀 Start Retraining</button>
+  <p class="text-center small mb-0">
+    This will collect disputed feedback and retrain automatically.
+  </p>
+
+  <hr />
+
+  <h6 class="text-center">Training Log</h6>
+  <div id="log" class="log-box">Idle...</div>
+</div>
+
+<script>
+const retrainBtn = document.getElementById("startRetrain");
+const logBox = document.getElementById("log");
+
+retrainBtn.addEventListener("click", async () => {
+  retrainBtn.disabled = true;
+  retrainBtn.textContent = "⏳ Running retrain...";
+  logBox.textContent = "Preparing data and starting retrain...\\n";
+
+  try {
+    const response = await fetch("/admin/retrain_simulate", {
+      method: "POST",
+      credentials: "include"
+    });
+
+    const data = await response.json();
+
+    if (data.ok) {
+      logBox.textContent += "✅ " + data.message + "\\n";
+    } else {
+      logBox.textContent += "❌ Retrain failed: " + (data.message || JSON.stringify(data)) + "\\n";
+    }
+  } catch (err) {
+    logBox.textContent += "⚠️ Error: " + err.message + "\\n";
+  } finally {
+    retrainBtn.disabled = false;
+    retrainBtn.textContent = "🧠 Start Retraining";
+    logBox.scrollTop = logBox.scrollHeight;
+  }
+});
+</script>
+
+<script>
+lucide.createIcons();
+
+const effects = ["fade", "slide", "blur", "glass", "zoom"];
+const page = document.getElementById("page");
+
+function applyRandomEffect(){
+  const effect = effects[Math.floor(Math.random()*effects.length)];
+  page.classList.remove(...effects);
+  page.classList.add(effect);
+}
+
+applyRandomEffect();
+
+document.addEventListener("click",(e)=>{
+  if(e.target.closest("a, button")){
+    page.style.opacity = 0;
+    setTimeout(()=> applyRandomEffect(), 200);
+  }
+});
+
+// Logout functionality
+document.getElementById('logout').onclick = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+  location.href = '/login';
+};
+</script>
+
+</body>
+</html>

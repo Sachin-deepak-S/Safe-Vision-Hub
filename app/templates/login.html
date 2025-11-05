@@ -1,0 +1,32 @@
+{% extends "base_auth.html" %}
+{% block content %}
+
+  <!-- Centered Main Section -->
+  <main class="flex items-center justify-center min-h-screen">
+    <div class="form-container text-center p-8 rounded-2xl shadow-lg backdrop-blur-lg bg-white/10">
+      <!-- Bigger Header -->
+      <h1 class="text-5xl font-extrabold text-white mb-8 tracking-wide">
+        🔐 Login
+      </h1>
+
+      <form id="loginForm" class="flex flex-col space-y-4">
+        <input id="email" name="email" type="email" placeholder="Email" required
+          class="p-3 rounded-lg bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+
+        <input id="password" name="password" type="password" placeholder="Password" required
+          class="p-3 rounded-lg bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+
+        <button type="submit"
+          class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 rounded-lg transition-all duration-300">
+          Login
+        </button>
+      </form>
+
+      <button class="mt-6 text-indigo-200 hover:text-indigo-400 underline transition-all"
+        onclick="window.location.href='/signup'">
+        No account? Sign up
+      </button>
+    </div>
+  </main>
+
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">👤 Client Dashboard</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <a href="/upload" class="bg-blue-600 text-white rounded p-4 text-center hover:bg-blue-700">📤 Upload Media</a>
+  <a href="/reports" class="bg-purple-600 text-white rounded p-4 text-center hover:bg-purple-700">📊 Reports</a>
+  <a href="/profile" class="bg-green-600 text-white rounded p-4 text-center hover:bg-green-700">👤 Profile</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+  <a href="/feedback" class="bg-purple-600 text-white rounded p-4 text-center hover:bg-purple-700">💬 Feedback</a>
+  <a href="/api_docs" class="bg-green-600 text-white rounded p-4 text-center hover:bg-green-700">🔑 API Docs</a>
+</div>
+
+<section class="mt-10">
+  <h3 class="text-xl font-semibold mb-4">Your Upload Activity (Last 7 Days)</h3>
+  <canvas id="usageChart" height="150"></canvas>
+</section>
+
+<script>
+async function loadChartData() {
+  try {
+    const response = await fetch('/api/client/stats');
+    const data = await response.json();
+    const ctx = document.getElementById("usageChart");
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: data.labels,
+        datasets: [{
+          label: "Uploads",
+          data: data.data,
+          borderColor: "#60A5FA", // Light blue
+          backgroundColor: "rgba(96, 165, 250, 0.2)",
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Failed to load chart data:', error);
+    // Fallback to static data
+    const ctx = document.getElementById("usageChart");
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        datasets: [{
+          label: "Uploads",
+          data: [0, 0, 0, 0, 0, 0, 0],
+          borderColor: "#60A5FA", // Light blue
+          backgroundColor: "rgba(96, 165, 250, 0.2)"
+        }]
+      },
+    });
+  }
+}
+
+loadChartData();
+</script>
+{% endblock %}

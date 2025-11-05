@@ -1,0 +1,17 @@
+{% extends "base_auth.html" %}
+{% block title %}Admin Login{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center h-screen">
+  <div class="w-96 bg-slate-800 p-6 rounded">
+    <h2 class="text-xl font-bold mb-4">Admin Login</h2>
+    <form id="adminLoginForm">
+      <input id="email" class="w-full p-2 mb-2 rounded bg-slate-700" value="sachindeepaks6@gmail.com" required>
+      <input id="password" type="password" class="w-full p-2 mb-2 rounded bg-slate-700" placeholder="password" required>
+      <button class="bg-sky-500 px-4 py-2 rounded">Login</button>
+    </form>
+    <p id="msg" class="text-red-400 mt-2"></p>
+  </div>
+</div>
+
+
+{% endblock %}

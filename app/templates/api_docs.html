@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>API Demo</title>
+<link rel="icon" href="/client_static/favicon.png" type="image/png">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+/* ✅ Premium Golden AI Theme */
+body {
+  background: black;
+  overflow-x: hidden;
+}
+
+/* ✅ Golden Neural Wave Background */
+.ai-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.7;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✅ Neural network pattern overlay */
+.ai-wave::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255,215,0,0.05) 0%, transparent 50%);
+  animation: neuralPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes neuralPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
+}
+
+/* ✅ Page container (full width now) */
+#page {
+  padding: 2rem;
+  max-width: 100%;
+}
+
+/* ✅ Button Glow Pulse on Hover */
+.ai-btn {
+  border: 1px solid rgba(255,215,0,.6);
+  background: linear-gradient(135deg, #b8860b, #ffd700);
+  color: black; /* requested */
+  padding: .75rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .3s ease;
+  box-shadow: 0 0 8px rgba(255,215,0,.45);
+}
+
+.ai-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 18px rgba(255,215,0,.9), 0 0 36px rgba(255,215,0,.6);
+  animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+  50% { box-shadow: 0 0 22px rgba(255,215,0,1); }
+  100% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+}
+
+/* ✅ Random Page Transitions */
+.transition-wrapper {
+  opacity: 1;
+  animation-duration: .6s;
+  animation-fill-mode: forwards;
+}
+.fade { animation-name: fade; }
+.slide { animation-name: slide; }
+.blur { animation-name: blur; }
+.glass { animation-name: glass; }
+.zoom { animation-name: zoom; }
+
+@keyframes fade { from{opacity:0} to{opacity:1} }
+@keyframes slide {
+  from { opacity:0; transform: translateY(30px); }
+  to { opacity:1; transform: translateY(0); }
+}
+@keyframes blur {
+  from { filter: blur(12px); opacity:0; }
+  to { filter: blur(0); opacity:1; }
+}
+@keyframes glass {
+  from { backdrop-filter: blur(40px); opacity:0; }
+  to { backdrop-filter: blur(0); opacity:1; }
+}
+@keyframes zoom {
+  from { opacity:0; transform: scale(0.92); }
+  to { opacity:1; transform: scale(1); }
+}
+</style>
+</head>
+
+<body class="text-white">
+<div class="ai-wave"></div>
+
+<!-- ✅ Fixed Navigation Bar -->
+<div class="fixed top-0 left-0 w-full bg-black text-white shadow-md z-10 flex justify-between items-center p-4">
+  <h1 class="font-bold text-2xl flex items-center">
+    <img src="/client_static/favicon.png" alt="Favicon" class="h-8 w-10 mr-2">
+     NSFW-AI Hub
+  </h1>
+  <button id="logout" class="ai-btn">Logout</button>
+</div>
+
+<!-- ✅ Content Wrapper -->
+<div id="page" class="transition-wrapper">
+<div class="bg-gray-900 text-gray-200 min-h-screen p-6">
+  <h1 class="text-3xl font-bold mb-6">Machine-to-Machine API Demo</h1>
+
+  <section class="mb-8">
+    <label>API Key: 
+      <input id="apiKey" class="p-2 rounded bg-gray-700 text-gray-200 w-64">
+    </label>
+  </section>
+
+  <section class="mb-8">
+    <input type="file" id="fileInput" class="mb-2" accept="image/*,video/*">
+    <button id="predictBtn" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded disabled:opacity-50">
+      <span id="btnText">Predict via API</span>
+    </button>
+  </section>
+
+  <section>
+    <h2 class="text-xl font-semibold mb-2">Result</h2>
+    <pre id="result" class="bg-gray-800 p-3 rounded min-h-32 text-sm overflow-auto"></pre>
+  </section>
+
+  <!-- Error Display -->
+  <div id="errorMsg" class="mt-4 p-3 bg-red-600 text-white rounded hidden"></div>
+</div>
+</div>
+
+<script>
+document.getElementById("predictBtn").onclick = async () => {
+  const fileInput = document.getElementById("fileInput");
+  const apiKey = document.getElementById("apiKey").value;
+  const resultDiv = document.getElementById("result");
+  const errorDiv = document.getElementById("errorMsg");
+  const btn = document.getElementById("predictBtn");
+  const btnText = document.getElementById("btnText");
+
+  // Reset displays
+  resultDiv.textContent = "";
+  errorDiv.classList.add("hidden");
+  errorDiv.textContent = "";
+
+  if(!fileInput.files.length || !apiKey){
+    errorDiv.textContent = "Please select a file and enter your API key";
+    errorDiv.classList.remove("hidden");
+    return;
+  }
+
+  // Validate file type
+  const file = fileInput.files[0];
+  const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/bmp', 'image/gif', 'video/mp4', 'video/avi', 'video/mov', 'video/mkv'];
+  if (!allowedTypes.some(type => file.type === type || file.name.toLowerCase().endsWith(type.split('/')[1]))) {
+    errorDiv.textContent = "Unsupported file type. Please upload an image (PNG, JPG, BMP, GIF) or video (MP4, AVI, MOV, MKV).";
+    errorDiv.classList.remove("hidden");
+    return;
+  }
+
+  // Show loading state
+  btn.disabled = true;
+  btnText.textContent = "Processing...";
+  resultDiv.textContent = "Sending request to API...";
+
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("api_key", apiKey);
+
+    const res = await fetch('/api/m2m/predict', { method:'POST', body: formData });
+    const data = await res.json();
+
+    if (res.ok) {
+      resultDiv.textContent = JSON.stringify(data, null, 2);
+    } else {
+      errorDiv.textContent = `API Error (${res.status}): ${data.detail || 'Unknown error'}`;
+      errorDiv.classList.remove("hidden");
+      resultDiv.textContent = JSON.stringify(data, null, 2);
+    }
+  } catch (error) {
+    errorDiv.textContent = `Network Error: ${error.message}`;
+    errorDiv.classList.remove("hidden");
+    resultDiv.textContent = "Failed to connect to API";
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = "Predict via API";
+  }
+};
+</script>
+
+<script>
+lucide.createIcons();
+
+const effects = ["fade", "slide", "blur", "glass", "zoom"];
+const page = document.getElementById("page");
+
+function applyRandomEffect(){
+  const effect = effects[Math.floor(Math.random()*effects.length)];
+  page.classList.remove(...effects);
+  page.classList.add(effect);
+}
+
+applyRandomEffect();
+
+document.addEventListener("click",(e)=>{
+  if(e.target.closest("a, button")){
+    page.style.opacity = 0;
+    setTimeout(()=> applyRandomEffect(), 200);
+  }
+});
+
+// Logout functionality
+document.getElementById('logout').onclick = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+  location.href = '/login';
+};
+</script>
+
+</body>
+</html>

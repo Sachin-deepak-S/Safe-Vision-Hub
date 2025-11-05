@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>API Documentation</title>
+<link rel="icon" href="/client_static/favicon.png" type="image/png">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+/* ✅ Premium Golden AI Theme */
+body {
+  background: black;
+  overflow-x: hidden;
+}
+
+/* ✅ Golden Neural Wave Background */
+.ai-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.7;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✅ Neural network pattern overlay */
+.ai-wave::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255,215,0,0.05) 0%, transparent 50%);
+  animation: neuralPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes neuralPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
+}
+
+/* ✅ Page container (full width now) */
+#page {
+  padding: 2rem;
+  padding-top: 4rem;
+  max-width: 100%;
+}
+
+/* ✅ Button Glow Pulse on Hover */
+.ai-btn {
+  border: 1px solid rgba(255,215,0,.6);
+  background: linear-gradient(135deg, #b8860b, #ffd700);
+  color: black; /* requested */
+  padding: .75rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: .3s ease;
+  box-shadow: 0 0 8px rgba(255,215,0,.45);
+}
+
+.ai-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 18px rgba(255,215,0,.9), 0 0 36px rgba(255,215,0,.6);
+  animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+  50% { box-shadow: 0 0 22px rgba(255,215,0,1); }
+  100% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+}
+
+/* ✅ Random Page Transitions */
+.transition-wrapper {
+  opacity: 1;
+  animation-duration: .6s;
+  animation-fill-mode: forwards;
+}
+.fade { animation-name: fade; }
+.slide { animation-name: slide; }
+.blur { animation-name: blur; }
+.glass { animation-name: glass; }
+.zoom { animation-name: zoom; }
+
+@keyframes fade { from{opacity:0} to{opacity:1} }
+@keyframes slide {
+  from { opacity:0; transform: translateY(30px); }
+  to { opacity:1; transform: translateY(0); }
+}
+@keyframes blur {
+  from { filter: blur(12px); opacity:0; }
+  to { filter: blur(0); opacity:1; }
+}
+@keyframes glass {
+  from { backdrop-filter: blur(40px); opacity:0; }
+  to { backdrop-filter: blur(0); opacity:1; }
+}
+@keyframes zoom {
+  from { opacity:0; transform: scale(0.92); }
+  to { opacity:1; transform: scale(1); }
+}
+</style>
+</head>
+
+<body class="text-white">
+<div class="ai-wave"></div>
+
+<!-- ✅ Fixed Navigation Bar -->
+<div class="fixed top-0 left-0 w-full bg-black text-white shadow-md z-10 flex justify-between items-center p-4">
+  <h1 class="font-bold text-2xl flex items-center">
+    <img src="/client_static/favicon.png" alt="Favicon" class="h-8 w-10 mr-2">
+     NSFW-AI Hub
+  </h1>
+  <button id="logout" class="ai-btn">Logout</button>
+</div>
+
+<!-- ✅ Content Wrapper -->
+<div id="page" class="transition-wrapper">
+<a href="/client_dashboard" class="ai-btn mb-4 inline-block">← Back to Client Dashboard</a>
+<div class="max-w-6xl mx-auto p-6">
+  <h1 class="text-4xl font-bold mb-6">NSFW AI Hub API Documentation</h1>
+
+  <!-- Navigation Tabs -->
+  <div class="mb-6">
+    <nav class="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+      <button onclick="showTab('overview')" class="tab-btn active px-4 py-2 rounded-md text-sm font-medium bg-white dark:bg-gray-700 shadow">Overview</button>
+      <button onclick="showTab('endpoints')" class="tab-btn px-4 py-2 rounded-md text-sm font-medium">Endpoints</button>
+      <button onclick="showTab('demo')" class="tab-btn px-4 py-2 rounded-md text-sm font-medium">Interactive Demo</button>
+    </nav>
+  </div>
+
+  <!-- Overview Tab -->
+  <div id="overview-tab" class="tab-content">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-6">
+      <h2 class="text-2xl font-semibold mb-4">Getting Started</h2>
+      <div class="space-y-4">
+        <div>
+          <h3 class="text-lg font-medium mb-2">Authentication</h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-2">The API uses JWT tokens for authentication. You can obtain a token by:</p>
+          <ol class="list-decimal list-inside space-y-1 text-gray-600 dark:text-gray-300">
+            <li>Registering an account at <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">/signup</code></li>
+            <li>Logging in at <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">/login</code> to get JWT tokens</li>
+            <li>Using the JWT in the Authorization header: <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">Authorization: Bearer <token></code></li>
+          </ol>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium mb-2">API Keys</h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-2">For M2M (Machine-to-Machine) access, use API keys:</p>
+          <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-300">
+            <li>API keys are automatically generated when you register</li>
+            <li>Include in headers: <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">X-API-KEY: <your-api-key></code></li>
+            <li>Daily limits: 50 images, 10 videos per API key</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium mb-2">Rate Limiting</h3>
+          <p class="text-gray-600 dark:text-gray-300">API calls are rate-limited. Exceeding limits returns HTTP 429.</p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium mb-2">Supported Formats</h3>
+          <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-300">
+            <li><strong>Images:</strong> PNG, JPG, JPEG, BMP, GIF</li>
+            <li><strong>Videos:</strong> MP4, AVI, MOV, MKV</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+      <h2 class="text-2xl font-semibold mb-4">Error Responses</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-auto">
+          <thead>
+            <tr class="bg-gray-50 dark:bg-gray-700">
+              <th class="px-4 py-2 text-left">Status Code</th>
+              <th class="px-4 py-2 text-left">Description</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+            <tr><td class="px-4 py-2">400</td><td class="px-4 py-2">Bad Request - Invalid input or file type</td></tr>
+            <tr><td class="px-4 py-2">401</td><td class="px-4 py-2">Unauthorized - Invalid or missing authentication</td></tr>
+            <tr><td class="px-4 py-2">403</td><td class="px-4 py-2">Forbidden - Insufficient permissions</td></tr>
+            <tr><td class="px-4 py-2">404</td><td class="px-4 py-2">Not Found - Resource not found</td></tr>
+            <tr><td class="px-4 py-2">429</td><td class="px-4 py-2">Too Many Requests - Rate limit exceeded</td></tr>
+            <tr><td class="px-4 py-2">500</td><td class="px-4 py-2">Internal Server Error - Server error</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Endpoints Tab -->
+  <div id="endpoints-tab" class="tab-content hidden">
+    <!-- Prediction Endpoints -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-6">
+      <h2 class="text-2xl font-semibold mb-4">Prediction Endpoints</h2>
+
+      <div class="mb-6">
+        <h3 class="text-xl font-medium mb-3">POST /api/m2m/predict</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-3">Machine-to-machine prediction endpoint for external integrations.</p>
+
+        <div class="mb-4">
+          <h4 class="font-medium mb-2">Headers:</h4>
+          <pre class="bg-gray-100 dark:bg-gray-700 p-3 rounded text-sm">X-API-KEY: <your-api-key></pre>
+        </div>
+
+        <div class="mb-4">
+          <h4 class="font-medium mb-2">Body (multipart/form-data):</h4>
+          <pre class="bg-gray-100 dark:bg-gray-700 p-3 rounded text-sm">file: <image or video file></pre>
+        </div>
+
+        <div class="mb-4">
+          <h4 class="font-medium mb-2">Success Response (200):</h4>
+          <pre class="bg-gray-100 dark:bg-gray-700 p-3 rounded text-sm">{
+  "file": "uploaded_filename",
+  "primary": {"label": "NSFW", "confidence": 0.92},
+  "secondary": {"label": "NSFW", "confidence": 0.88},
+  "disagreement": false,
+  "id": "prediction_id",
+  "secondary_model_used": "model_name",
+  "feedback_required": true,
+  "feedback_id": "prediction_id"
+}</pre>
+        </div>
+
+        <div class="mb-4">
+          <h4 class="font-medium mb-2">Curl Example:</h4>
+          <pre class="bg-gray-100 dark:bg-gray-700 p-3 rounded text-sm relative"><code>curl -X POST "https://your-domain.com/api/m2m/predict" \
+  -H "X-API-KEY: your-api-key" \
+  -F "file=@image.jpg"</code><button onclick="copyToClipboard(this.previousElementSibling)" class="absolute top-2 right-2 px-2 py-1 bg-blue-500 text-white text-xs rounded">Copy</button></pre>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-200 dark:border-gray-600 pt-6">
+        <h3 class="text-xl font-medium mb-3">POST /api/preference</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-3">Save user's AI model preference for training.</p>
+
+        <div class="mb-4">
+          <h4 class="font-medium mb-2">Headers:</h4>
+          <pre class="bg-gray-100 dark:bg-gray-700 p-3 rounded text-sm">Authorization: Bearer <jwt-token></pre>
+        </div>
+
+        <div class="mb-4">
+          <h4 class="font-medium mb-2">Body (form-data):</h4>
+          <pre class="bg-gray-100 dark:bg-gray-700 p-3 rounded text-sm">preferred: "My Model" or "Other's Model"
+file_name: <optional filename></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Endpoints -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-6">
+      <h2 class="text-2xl font-semibold mb-4">Feedback Endpoints</h2>
+
+      <div class="mb-6">
+        <h3 class="text-xl font-medium mb-3">POST /api/feedback</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-3">Submit feedback on a prediction.</p>
+
+        <div class="mb-4">
+          <h4 class="font-medium mb-2">Body (form-data):</h4>
+          <pre class="bg-gray-100 dark:bg-gray-700 p-3 rounded text-sm">feedback_id: <prediction_id>
+chosen: "perfect" | "okay" | "wrong"
+suggested: <optional correction></pre>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-200 dark:border-gray-600 pt-6">
+        <h3 class="text-xl font-medium mb-3">GET /api/pending_feedback</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-3">Get pending feedback items for the user.</p>
+
+        <div class="mb-4">
+          <h4 class="font-medium mb-2">Response:</h4>
+          <pre class="bg-gray-100 dark:bg-gray-700 p-3 rounded text-sm">{
+  "pending_feedback": [
+    {
+      "id": "prediction_id",
+      "primary": {"label": "NSFW", "confidence": 0.92},
+      "secondary": {"label": "NSFW", "confidence": 0.88},
+      "timestamp": "2024-01-01T12:00:00"
+    }
+  ]
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Endpoints -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+      <h2 class="text-2xl font-semibold mb-4">User Endpoints</h2>
+
+      <div class="mb-6">
+        <h3 class="text-xl font-medium mb-3">GET /api/profile</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-3">Get user profile information.</p>
+
+        <div class="mb-4">
+          <h4 class="font-medium mb-2">Response:</h4>
+          <pre class="bg-gray-100 dark:bg-gray-700 p-3 rounded text-sm">{
+  "email": "user@example.com",
+  "api_key": "api-key-here",
+  "image_usage": 25,
+  "video_usage": 3
+}</pre>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-200 dark:border-gray-600 pt-6">
+        <h3 class="text-xl font-medium mb-3">GET /api/client/stats</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-3">Get client usage statistics.</p>
+
+        <div class="mb-4">
+          <h4 class="font-medium mb-2">Response:</h4>
+          <pre class="bg-gray-100 dark:bg-gray-700 p-3 rounded text-sm">{
+  "labels": ["2024-01-01", "2024-01-02", ...],
+  "data": [10, 15, 8, ...]
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demo Tab -->
+  <div id="demo-tab" class="tab-content hidden">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+      <h2 class="text-2xl font-semibold mb-4">Interactive API Demo</h2>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-lg font-medium mb-3">Test M2M Prediction</h3>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">API Key:</label>
+              <input id="demoApiKey" type="text" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" placeholder="Enter your API key">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">File:</label>
+              <input id="demoFileInput" type="file" accept="image/*,video/*" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+            </div>
+
+            <button id="demoPredictBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50">
+              <span id="demoBtnText">Predict</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium mb-3">Response</h3>
+          <pre id="demoResult" class="bg-gray-100 dark:bg-gray-700 p-4 rounded min-h-48 text-sm overflow-auto"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// Tab switching
+function showTab(tabName) {
+  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById(tabName + '-tab').classList.remove('hidden');
+  event.target.classList.add('active');
+}
+
+// Copy to clipboard
+function copyToClipboard(element) {
+  const text = element.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = element.nextElementSibling;
+    const originalText = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = originalText, 2000);
+  });
+}
+
+// Demo functionality
+document.getElementById("demoPredictBtn").onclick = async () => {
+  const fileInput = document.getElementById("demoFileInput");
+  const apiKey = document.getElementById("demoApiKey").value;
+  const resultDiv = document.getElementById("demoResult");
+  const btn = document.getElementById("demoPredictBtn");
+  const btnText = document.getElementById("demoBtnText");
+
+  if (!fileInput.files.length || !apiKey) {
+    resultDiv.textContent = "Error: Please select a file and enter your API key";
+    return;
+  }
+
+  // Show loading state
+  btn.disabled = true;
+  btnText.textContent = "Processing...";
+  resultDiv.textContent = "Sending request...";
+
+  try {
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+    formData.append("api_key", apiKey);
+
+    const response = await fetch('/api/m2m/predict', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      resultDiv.textContent = JSON.stringify(data, null, 2);
+    } else {
+      resultDiv.textContent = `Error ${response.status}: ${JSON.stringify(data, null, 2)}`;
+    }
+  } catch (error) {
+    resultDiv.textContent = `Network Error: ${error.message}`;
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = "Predict";
+  }
+};
+</script>
+
+<script>
+lucide.createIcons();
+
+const effects = ["fade", "slide", "blur", "glass", "zoom"];
+const page = document.getElementById("page");
+
+function applyRandomEffect(){
+  const effect = effects[Math.floor(Math.random()*effects.length)];
+  page.classList.remove(...effects);
+  page.classList.add(effect);
+}
+
+applyRandomEffect();
+
+document.addEventListener("click",(e)=>{
+  if(e.target.closest("a, button")){
+    page.style.opacity = 0;
+    setTimeout(()=> applyRandomEffect(), 200);
+  }
+});
+
+// Logout functionality
+document.getElementById('logout').onclick = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refresh');
+  location.href = '/login';
+};
+</script>
+
+</body>
+</html>

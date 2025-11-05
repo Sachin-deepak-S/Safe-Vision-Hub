@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Weekly Summary</title>
+  <style>
+    /* General reset */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #111111;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Container */
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #ffffff;
+      
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    /* Table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #3b82f6; /* Tailwind blue-500 */
+      color: #ffffff;
+    }
+
+    /* Paragraphs */
+    p {
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0 0 12px 0;
+    }
+
+    /* Button (optional) */
+    a.btn {
+      display: inline-block;
+      background-color: #2563eb; /* Tailwind blue-600 */
+      color: #ffffff !important;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 5px;
+      font-size: 15px;
+      margin-top: 12px;
+    }
+
+    /* Dark mode fallback */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #1e1e1e;
+        color: #f3f4f6;
+      }
+      .container {
+        background-color: #2d2d2d;
+        box-shadow: none;
+      }
+      th {
+        background-color: #2563eb;
+      }
+      td, p {
+        color: #f3f4f6;
+      }
+      table {
+        border-color: #444;
+      }
+      th, td {
+        border-bottom: 1px solid #444;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="font-size: 24px; margin-bottom: 12px;">📊 Weekly Summary Report</h1>
+    <p>Hello Admin,</p>
+    <p>Here is the summary of this week’s API usage and feedback:</p>
+    <table>
+      <thead>
+        <tr><th>User</th><th>API Calls</th><th>Disagreements</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>user1</td><td>34</td><td>2</td></tr>
+        <tr><td>user2</td><td>50</td><td>5</td></tr>
+      </tbody>
+    </table>
+    <p>Best regards,<br><strong>NSFW AI Hub Team</strong></p>
+
+    <!-- Optional action button (rendered if dashboard_url provided) -->
+    <a href="{{ dashboard_url }}" class="btn">View Dashboard</a>
+  </div>
+</body>
+</html>

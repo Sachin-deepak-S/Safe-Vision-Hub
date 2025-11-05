@@ -1,0 +1,95 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Data and uploads (sensitive user data)
+data/uploads/
+data/users.json
+data/api_keys.json
+data/feedback.json
+data/api_usage.json
+data/admin_audit.json
+data/cache.json
+data/comparison.json
+data/feedback_sectors.json
+data/model_comparison.json
+data/preferences.json
+data/retraining.json
+data/settings.json
+data/upload_count.json
+
+# Models (large files)
+models/final_model/*
+models/secondary_models/*
+models/priority_feedback/*.json
+
+# Reports
+reports/
+test_report.json
+
+# Temporary deployment files
+temp_deploy/
+
+# Node modules
+node_modules/
+
+# Rust build artifacts
+target/
+Cargo.lock
+
+# Docker
+.dockerignore
+
+# Git
+.git/
