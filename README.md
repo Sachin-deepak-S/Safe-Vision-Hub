@@ -1,77 +1,140 @@
-# NSFW AI Hub
+# Safe-Vision-Hub  
+> A content safety / NSFW filtering system based on deep learning  
 
-NSFW classification hub (CPU, JSON-backed) with web interface and API.
+## 📌 Project Overview  
+Safe-Vision-Hub is designed to help detect and manage unsafe/NSFW (Not Safe For Work) visual content (images and/or video) using AI.  
+It provides:  
+- A trained model for NSFW content detection  
+- A processing pipeline that can classify or blur/obscure detected unsafe regions  
+- A UI (web or CLI) to allow users to upload visuals and view results  
+- Easy deployability (e.g., via GitHub + Gradio / Streamlit or on Hugging Face Spaces)  
 
-## Setup
+## 🔍 Features  
+- Image and/or video input support  
+- NSFW class detection and optional region blurring/masking  
+- User-friendly interface for quick upload and review  
+- Modular architecture: separate model loading, inference, UI and processing  
+- Clear documentation for installation and usage  
 
-1. **Clone the repository**
+## 🧱 Repository Structure  
+Safe-Vision-Hub/
+├── app.py (or main.py) ← main entrypoint
+├── models/ ← trained model weights
+├── static/ / templates/ ← UI assets (if web-based)
+├── requirements.txt ← Python packages required
+├── runtime.txt ← (optional) specify Python version for deployment
+├── README.md ← this file
+└── LICENSE ← open source license
+
+bash
+Copy code
+
+## 🚀 Installation & Setup  
+1. Clone the repository:  
    ```bash
-   git clone <repository-url>
-   cd nsfw_ai_hub
-   ```
+   git clone https://github.com/<your-username>/Safe-Vision-Hub.git
+   cd Safe-Vision-Hub
+Create and activate a Python virtual environment:
 
-2. **Create virtual environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+bash
+Copy code
+python3 -m venv venv
+source venv/bin/activate  # Unix/macOS
+# On Windows: venv\Scripts\activate
+Install required packages:
 
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+bash
+Copy code
+pip install -r requirements.txt
+(Optional) If you included a runtime.txt, ensure your Python version matches it (e.g., python-3.10).
 
-4. **Configure environment variables**
+🧪 How to Run
+For CLI mode:
 
-   Copy `.env.example` to `.env` and fill in your values:
-   ```bash
-   cp .env.example .env
-   ```
+bash
+Copy code
+python app.py --input path/to/image_or_video
+For Web mode (Gradio/Streamlit):
 
-   **Required environment variables:**
-   - `JWT_SECRET`: Secret key for JWT tokens
-   - `ADMIN_EMAIL`: Admin email address
-   - `GMAIL_USER`: Gmail address for sending reports
-   - `GMAIL_APP_PASS`: Gmail app password
+bash
+Copy code
+python app.py
+Then open your browser and navigate to http://localhost:… (as printed in console)
 
-   **Optional API keys:**
-   - `DEEPAI_API_KEY`: DeepAI API key for secondary model
-   - `PICPURIFY_API_KEY`: PicPurify API key for secondary model
-   - `SIGHTENGINE_API_KEY`: Sightengine API key for secondary model
+For deployment on Hugging Face Spaces:
 
-5. **Add your primary model**
+Ensure app.py (or your entry file) is present
 
-   Put your primary NSFW detection model under `models/final_model/` (Hugging Face format).
+Ensure requirements.txt (and runtime.txt, if used) are present
 
-## Running
+Link your repo in the Space and let it build.
 
-**Development:**
-```bash
-python app/main.py
-```
+📁 Model / Weight Files
+The model weights are stored in the models/ directory.
+If they are large or stored externally, mention where to download them and how to place them in models/.
+For example:
 
-**Production (with Gunicorn):**
-```bash
-gunicorn -w 4 -b 0.0.0.0:8000 app.main:app
-```
+Copy code
+models/
+└── nsfw_detector.pth
+Ensure your code references this path correctly (models/nsfw_detector.pth).
 
-## Deployment
+📝 Usage Example
+Here’s how you might use the system:
 
-- **Hugging Face Spaces**: Use the provided deployment scripts
-- **Docker**: Build and run using the Dockerfile
-- **Local**: Follow the setup instructions above
+bash
+Copy code
+python app.py --input examples/sample1.jpg --output results/  
+Then view results/sample1_result.jpg to see detected regions or blurred output.
 
-## Security Notes
+If using web UI, upload an image through the interface and wait for the result to display.
 
-- Never commit `.env` file or any sensitive data to version control
-- All sensitive configuration is loaded from environment variables
-- The `.gitignore` file excludes sensitive files and directories
+🎯 Deployment
+This project is deploy-ready on platforms like Hugging Face Spaces.
 
-## Features
+Branch and push your code to GitHub.
 
-- Web interface for NSFW image/video classification
-- REST API for programmatic access
-- User management and authentication
-- Admin dashboard with analytics
-- Secondary model rotation for validation
-- Feedback collection and model retraining
+Create a new Space, choose e.g. “Gradio” SDK.
+
+Connect to this repo or upload files directly.
+
+Ensure build succeeds and the UI launches.
+
+Test with sample images.
+
+🧰 Dependencies
+Here are some of the major libraries used (see requirements.txt for full list):
+
+Python ≥ 3.x
+
+torch / torchvision
+
+gradio (or streamlit)
+
+numpy
+
+PIL (Pillow)
+
+opencv-python
+
+✅ License
+This project is released under the MIT License.
+
+🙋 Contributing
+Contributions, bug reports and feature requests are welcome! Please follow the usual workflow:
+
+Fork the repository
+
+Create a feature branch (git checkout -b feature/my-feature)
+
+Commit your changes (git commit -m "Add …")
+
+Push to your fork and open a Pull Request.
+
+🧾 Acknowledgements
+Based on advanced NSFW detection models and research
+
+Thanks to the open-source community for models, tools and inspiration
+
+⚠️ Disclaimer & Ethical Use
+This tool is meant for responsible use only. Detection of NSFW or sensitive content does not guarantee 100% accuracy. Use caution and ensure compliance with platform policies, local regulations and user privacy.
