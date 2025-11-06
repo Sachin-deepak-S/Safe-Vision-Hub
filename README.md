@@ -271,10 +271,10 @@ Hugging Face Transformers
 
 FastAPI Framework
 
-👤 Author
-Sachin Deepak S
-📧 [sachindeepak4181.com]
-🌐 LinkedIn | GitHub
+## 👤 Author
+**Sachin Deepak S**  
+📧 [sachindeepak4181@gmail.com](mailto:sachindeepak4181@gmail.com)  
+🌐 [LinkedIn](https://www.linkedin.com/in/sachin-deepak-s/) | [GitHub](https://github.com/Sachin-deepak-S)
 
 ⚠️ Disclaimer & Ethical Use
 This tool is intended for educational and research purposes only.
