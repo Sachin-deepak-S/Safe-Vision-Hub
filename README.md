@@ -280,6 +280,3 @@ FastAPI Framework
 This tool is intended for educational and research purposes only.
 Detection results are probabilistic and not guaranteed 100% accurate.
 Always ensure ethical use and compliance with privacy laws, data protection standards, and platform policies.
-
-yaml
-Copy code
