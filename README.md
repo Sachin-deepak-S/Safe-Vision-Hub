@@ -282,16 +282,6 @@ Hugging Face Transformers
 
 FastAPI Framework
 
-👤 Author
-Sachin Deepak S
-📧 sachindeepak4181@gmail.com
-🌐 LinkedIn | GitHub
-
-⚠️ Disclaimer & Ethical Use
-This project is intended for educational and research purposes only.
-The results are probabilistic and may not always be accurate.
-Do not use this tool for unethical or illegal content screening.
-Always follow applicable laws, data privacy regulations, and platform guidelines.
 
 ## 👤 Author
 **Sachin Deepak S**  
