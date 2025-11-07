@@ -149,7 +149,7 @@ Add the model file path to .gitignore to prevent large uploads.
 ## 🧩 Building and Integrating Your Own Model
 If you’d like to train your own NSFW detection or classification model, you can easily integrate it into this project.
 
-**Step 1 **— Train a Model (Example using TensorFlow)
+*Step 1 *— Train a Model (Example using TensorFlow)
 python
 
 from tensorflow.keras.models import Sequential
@@ -197,7 +197,7 @@ model.fit(train_data, validation_data=val_data, epochs=10)
 
 model.save('models/final_model/model.h5')
 
-**Step 2 **— Integrate the Model
+*Step 2 *— Integrate the Model
 
 In app/model_utils.py:
 
@@ -211,7 +211,7 @@ def load_local_model():
     
     return model
     
-**Step 3 **— Test
+*Step 3 *— Test
 
 Upload an image in the web UI to verify your model predictions.
 
