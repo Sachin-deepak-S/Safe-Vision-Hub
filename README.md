@@ -107,6 +107,8 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 
+install model : https://github.com/Sachin-deepak-S/Safe-Vision-Hub/releases
+
 4️⃣ Configure Environment Variables
 
 Copy .env.example → .env and fill in your values:
