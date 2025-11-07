@@ -49,46 +49,43 @@ The system supports user authentication, feedback loops, admin dashboards, and m
 ## 🧱 Repository Structure
 Safe-Vision-Hub/
 │
-├── app.py # Legacy entry-point
+├── app.py                              # Legacy entry-point
 │
 ├── app/
-│ ├── main.py # FastAPI app
-│ ├── config.py # Configuration and environment variables
-│ ├── auth.py # Authentication utilities
-│ ├── model_utils.py # Model inference logic
-│ ├── secondary_model.py # External API integrations
-│ ├── feedback_system.py # Feedback collection & processing
-│ ├── api_keys.py # API key management
-│ ├── utils.py # Helper functions
-│ ├── logger.py # Logging setup
-│ ├── scheduler.py # Background tasks
-│ └── train_model.py # Model training script
+│   ├── main.py                         # FastAPI app
+│   ├── config.py                       # Configuration and environment variables
+│   ├── auth.py                         # Authentication utilities
+│   ├── model_utils.py                  # Model inference logic
+│   ├── secondary_model.py              # External API integrations
+│   ├── feedback_system.py              # Feedback collection & processing
+│   ├── api_keys.py                     # API key management
+│   ├── utils.py                        # Helper functions
+│   ├── logger.py                       # Logging setup
+│   ├── scheduler.py                    # Background tasks
+│   └── train_model.py                  # Model training script
 │
 ├── models/
-│ └── final_model/
-│ ├── model.h5 # Primary model file
-│ └── metadata.json # Model metadata
+│   └── final_model/
+│       ├── model.h5                    # Primary model file
+│       └── metadata.json               # Model metadata
 │
 ├── data/
-│ ├── uploads/ # Uploaded files
-│ ├── feedback.json # User feedback data
-│ ├── users.json # User accounts
-│ └── ...
+│   ├── uploads/                        # Uploaded files
+│   ├── feedback.json                   # User feedback data
+│   ├── users.json                      # User accounts
+│   └── ...
 │
-├── app/templates/ # Jinja2 templates
-│ ├── static/ # CSS, JS, and assets
-│ └── ...
+├── app/templates/                      # Jinja2 templates
+│   ├── static/                         # CSS, JS, and assets
+│   └── ...
 │
-├── requirements.txt # Dependencies
-├── runtime.txt # Python version for deployment
-├── Dockerfile # Docker configuration
-├── .env.example # Example environment file
-├── .gitignore # Git ignore rules
-├── README.md # Documentation
-└── LICENSE # License
-
-yaml
-Copy code
+├── requirements.txt                    # Dependencies
+├── runtime.txt                         # Python version for deployment
+├── Dockerfile                          # Docker configuration
+├── .env.example                        # Example environment file
+├── .gitignore                          # Git ignore rules
+├── README.md                           # Documentation
+└── LICENSE                             # License
 
 ---
 
