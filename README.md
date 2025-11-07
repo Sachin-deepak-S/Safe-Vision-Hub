@@ -15,6 +15,7 @@
 - [Installation & Setup](#-installation--setup)
 - [How to Run](#-how-to-run-the-application)
 - [Model & Weights](#-model--weights)
+- [Building and Integrating Your Own Model](#-building-and-integrating-your-own-model)
 - [Demo / Usage Example](#-demo--usage-example)
 - [Dependencies](#-dependencies--technology-stack)
 - [Deployment](#-deployment-eg-on-hugging-face-spaces)
@@ -33,7 +34,6 @@
 ## 📌 Project Overview
 **Safe-Vision-Hub** is a FastAPI-based AI system built to help detect and filter visual content that may be *Not Safe For Work (NSFW)* or otherwise unsafe.  
 It supports uploading images (and optionally videos), classifies them using AI models, and allows automatic blurring or masking of detected unsafe regions.  
-
 The system includes an admin dashboard, authentication, feedback loop for model retraining, and optional integration with external APIs for secondary validation.
 
 ---
@@ -52,38 +52,44 @@ The system includes an admin dashboard, authentication, feedback loop for model 
 
 ## 🧱 Repository Structure
 Safe-Vision-Hub/
-├── app.py ← Legacy entry-point (use app/main.py)
+│
+├── app.py # Legacy entry-point (use app/main.py)
+│
 ├── app/
-│ ├── main.py ← FastAPI app
-│ ├── config.py ← Environment config
-│ ├── auth.py ← Authentication utilities
-│ ├── model_utils.py ← Primary model inference
-│ ├── secondary_model.py ← External API integrations
-│ ├── feedback_system.py ← Feedback collection & processing
-│ ├── api_keys.py ← API key management
-│ ├── utils.py ← Helper utilities
-│ ├── logger.py ← Logging setup
-│ ├── scheduler.py ← Background tasks
-│ └── train_model.py ← Model training
+│ ├── main.py # FastAPI app
+│ ├── config.py # Environment config
+│ ├── auth.py # Authentication utilities
+│ ├── model_utils.py # Primary model inference
+│ ├── secondary_model.py # External API integrations
+│ ├── feedback_system.py # Feedback collection & processing
+│ ├── api_keys.py # API key management
+│ ├── utils.py # Helper utilities
+│ ├── logger.py # Logging setup
+│ ├── scheduler.py # Background tasks
+│ └── train_model.py # Model training
+│
 ├── models/
 │ └── final_model/
-│ ├── model.h5 ← Primary NSFW detection model
-│ └── metadata.json ← Model metadata
+│ ├── model.h5 # Primary NSFW detection model
+│ └── metadata.json # Model metadata
+│
 ├── data/
-│ ├── uploads/ ← Uploaded images/videos
-│ ├── feedback.json ← User feedback data
-│ ├── users.json ← User data
+│ ├── uploads/ # Uploaded images/videos
+│ ├── feedback.json # User feedback data
+│ ├── users.json # User data
 │ └── ...
-├── app/templates/ ← Jinja2 templates
-│ ├── static/ ← CSS, JS, images
+│
+├── app/templates/
+│ ├── static/ # CSS, JS, images
 │ └── ...
-├── requirements.txt
-├── runtime.txt
-├── Dockerfile
-├── .env.example
-├── .gitignore
-├── README.md
-└── LICENSE
+│
+├── requirements.txt # Dependencies
+├── runtime.txt # Python version for deployment
+├── Dockerfile # Docker configuration
+├── .env.example # Example environment file
+├── .gitignore # Git ignore rules
+├── README.md # Project documentation
+└── LICENSE # License file
 
 yaml
 Copy code
@@ -131,27 +137,104 @@ Copy code
 models/final_model/
 ├── model.h5
 └── metadata.json
-🧪 How to Run the Application
-Local Development
-bash
-Copy code
-python app/main.py
-Then visit 👉 http://localhost:8000
-
-Production (Gunicorn)
-bash
-Copy code
-gunicorn -w 4 -b 0.0.0.0:8000 app.main:app
-CLI Example
-bash
-Copy code
-python app/main.py --input path/to/image.jpg --output results/
 📁 Model & Weights
 Primary model: models/final_model/model.h5
 
-Secondary models: Integrated via API (DeepAI, PicPurify, Sightengine)
+Secondary models: Integrated via APIs (DeepAI, PicPurify, Sightengine)
 
-You may also specify a Hugging Face model path if you want to load directly from transformers.
+You can also create and use your own custom model — see the next section.
+
+🧩 Building and Integrating Your Own Model
+If you’d like to train your own NSFW detection or content-classification model instead of using a pre-trained one, you can easily integrate it into this project.
+
+🧠 Step 1 — Train or Prepare Your Model
+Train your own model using TensorFlow, PyTorch, or any ML framework.
+Here’s an example using TensorFlow Keras:
+
+python
+Copy code
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+# Example: Build a simple CNN model
+model = Sequential([
+    Conv2D(32, (3,3), activation='relu', input_shape=(128,128,3)),
+    MaxPooling2D(2,2),
+    Conv2D(64, (3,3), activation='relu'),
+    MaxPooling2D(2,2),
+    Flatten(),
+    Dense(128, activation='relu'),
+    Dropout(0.5),
+    Dense(1, activation='sigmoid')  # Binary classification: Safe / NSFW
+])
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+# Load and train on your dataset
+train_datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
+
+train_data = train_datagen.flow_from_directory(
+    'dataset/',
+    target_size=(128,128),
+    batch_size=32,
+    class_mode='binary',
+    subset='training'
+)
+
+val_data = train_datagen.flow_from_directory(
+    'dataset/',
+    target_size=(128,128),
+    batch_size=32,
+    class_mode='binary',
+    subset='validation'
+)
+
+model.fit(train_data, validation_data=val_data, epochs=10)
+
+# Save model
+model.save('models/final_model/model.h5')
+🧩 Step 2 — Integrate Your Model
+Place your trained model inside:
+
+bash
+Copy code
+models/final_model/model.h5
+Update your model loading logic in app/model_utils.py:
+
+python
+Copy code
+from tensorflow.keras.models import load_model
+
+def load_local_model():
+    model_path = "models/final_model/model.h5"
+    model = load_model(model_path)
+    print("✅ Custom model loaded successfully.")
+    return model
+Now your app will use your own model during predictions.
+
+🧪 Step 3 — Test in the App
+Run locally:
+
+bash
+Copy code
+python app/main.py
+Upload an image in the web UI and verify model predictions.
+
+💡 Tips for Model Development
+Use a diverse dataset (Safe + NSFW examples)
+
+Preprocess all images to a consistent size (e.g., 128×128)
+
+Evaluate on validation/test data
+
+Consider fine-tuning open models like:
+
+OpenNSFW2 (TensorFlow)
+
+Yahoo OpenNSFW
+
+Keep model size <100 MB for easy deployment (Hugging Face compatible)
 
 📷 Demo / Usage Example
 
@@ -179,63 +262,61 @@ Deployment: Docker, Hugging Face Spaces (Gradio optional)
 
 Python Version: 3.10+
 
-See requirements.txt for the full package list.
-
 📦 Deployment (e.g., on Hugging Face Spaces)
 Option 1 – Using Docker (Recommended for FastAPI)
-Select “Docker” as the SDK when creating a new Space.
+Select “Docker” as SDK in Hugging Face Spaces.
 
-Connect this GitHub repository or upload files manually.
+Upload or connect your GitHub repo.
 
-Ensure Dockerfile, requirements.txt, and runtime.txt are present.
+Ensure Dockerfile, requirements.txt, and runtime.txt exist.
 
-Add any required environment variables under Settings → Secrets & Variables.
+Add environment variables under Settings → Secrets & Variables.
 
 Click Deploy.
 
 Option 2 – Using Gradio/Streamlit Wrapper
-If you prefer to deploy using Hugging Face’s native SDKs, wrap the FastAPI app with Gradio for demo purposes.
+Wrap the FastAPI app using Gradio for quick demos.
 
 📖 API Documentation
-Once the app is running:
+Once running:
 
-Swagger UI: http://localhost:8000/docs
+Swagger UI → http://localhost:8000/docs
 
-ReDoc: http://localhost:8000/redoc
+ReDoc → http://localhost:8000/redoc
 
 🪵 Logging
-Logs are automatically created and managed via logger.py.
-Default log file: logs/app.log
-You can configure verbosity or log rotation inside logger.py.
+Logs are managed via logger.py.
+Default: logs/app.log.
+Edit log level or rotation inside that file.
 
 🔐 Security Notes
-Never commit .env to GitHub.
+Don’t commit your .env file.
 
-Use Gmail App Passwords instead of real credentials.
+Use Gmail App Passwords, not real credentials.
 
 Keep your JWT secret safe.
 
 Rotate API keys regularly.
 
-Validate all uploads to avoid malicious file injections.
+Sanitize and validate file uploads.
 
 👍 Contributing
-Contributions are welcome!
+Fork the repo
 
-Fork this repository
-
-Create your feature branch
+Create a branch:
 
 bash
 Copy code
 git checkout -b feature/my-feature
-Commit & push changes
+Commit & push:
 
 bash
 Copy code
-git commit -m "Add my feature"
+git commit -m "Add new feature"
 git push origin feature/my-feature
 Open a Pull Request 🚀
+
+
 
 📝 License
 Licensed under the MIT License.
