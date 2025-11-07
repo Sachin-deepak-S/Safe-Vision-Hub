@@ -250,21 +250,21 @@ This project is licensed under the MIT License.
 You are free to use, modify, and distribute it with attribution.
 
 🎯 Roadmap
- Image upload + NSFW detection
+✅ Image upload + NSFW detection
 
- Admin dashboard & user management
+✅Admin dashboard & user management
 
- Feedback system & retraining
+✅ Feedback system & retraining
 
- Video detection support
+⬜ Video detection support
 
- Batch image analysis
+⬜ Batch image analysis
 
- Cloud integration (AWS, GCS)
+⬜ Cloud integration (AWS, GCS)
 
- Mobile-friendly UI
+⬜ Mobile-friendly UI
 
- Real-time webcam support
+⬜ Real-time webcam support
 
 🙏 Acknowledgements
 DeepAI NSFW Detection API
