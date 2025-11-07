@@ -246,10 +246,12 @@ git commit -m "Add new feature"
 Push and open a pull request 🚀
 
 📝 License
+
 This project is licensed under the MIT License.
 You are free to use, modify, and distribute it with attribution.
 
 🎯 Roadmap
+
 ✅ Image upload + NSFW detection
 
 ✅Admin dashboard & user management
@@ -267,6 +269,7 @@ You are free to use, modify, and distribute it with attribution.
 ⬜ Real-time webcam support
 
 🙏 Acknowledgements
+
 DeepAI NSFW Detection API
 
 PicPurify API
