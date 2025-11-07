@@ -130,7 +130,8 @@ Production (Gunicorn)
 bash
 Copy code
 gunicorn -w 4 -b 0.0.0.0:8000 app.main:app
-📁 Model & Weights
+
+## 📁 Model & Weights
 Default model path: models/final_model/model.h5
 
 Secondary API-based models: DeepAI, PicPurify, Sightengine
@@ -139,7 +140,7 @@ You can also train your own model (see next section).
 
 Add the model file path to .gitignore to prevent large uploads.
 
-🧩 Building and Integrating Your Own Model
+## 🧩 Building and Integrating Your Own Model
 If you’d like to train your own NSFW detection or classification model, you can easily integrate it into this project.
 
 Step 1 — Train a Model (Example using TensorFlow)
@@ -189,7 +190,7 @@ Copy code
 python app/main.py
 Upload an image in the web UI to verify your model predictions.
 
-🧪 Usage Example
+## 🧪 Usage Example
 Web UI
 Open the app in your browser (localhost:8000).
 
@@ -203,7 +204,7 @@ Copy code
 python app/main.py --input path/to/image.jpg --output results/
 (Add a screenshot or demo GIF here to show visual output)
 
-☁️ Deployment
+## ☁️ Deployment
 Hugging Face Spaces (Docker or Gradio)
 Create a new Space and select Docker SDK.
 
@@ -221,14 +222,14 @@ Set your environment variables under Settings → Secrets.
 
 Click Deploy and test your app live.
 
-📖 API Documentation
+## 📖 API Documentation
 FastAPI auto-generates interactive documentation:
 
 Swagger → http://localhost:8000/docs
 
 ReDoc → http://localhost:8000/redoc
 
-🤝 Contributing
+## 🤝 Contributing
 Contributions are always welcome!
 
 Fork this repository
@@ -245,12 +246,12 @@ Copy code
 git commit -m "Add new feature"
 Push and open a pull request 🚀
 
-📝 License
+## 📝 License
 
 This project is licensed under the MIT License.
 You are free to use, modify, and distribute it with attribution.
 
-🎯 Roadmap
+## 🎯 Roadmap
 
 ✅ Image upload + NSFW detection
 
@@ -268,7 +269,7 @@ You are free to use, modify, and distribute it with attribution.
 
 ⬜ Real-time webcam support
 
-🙏 Acknowledgements
+## 🙏 Acknowledgements
 
 DeepAI NSFW Detection API
 
@@ -286,7 +287,7 @@ FastAPI Framework
 📧 [sachindeepak4181@gmail.com](mailto:sachindeepak4181@gmail.com)  
 🌐 [LinkedIn](https://www.linkedin.com/in/sachin-deepak-s/) | [GitHub](https://github.com/Sachin-deepak-S)
 
-⚠️ Disclaimer & Ethical Use
+## ⚠️ Disclaimer & Ethical Use
 This project is intended for educational and research purposes only.
 The results are probabilistic and may not always be accurate.
 Do not use this tool for unethical or illegal content screening.
