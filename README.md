@@ -93,16 +93,19 @@ Safe-Vision-Hub/
 ``bash
 git clone https://github.com/Sachin-deepak-S/Safe-Vision-Hub.git
 cd Safe-Vision-Hub
+
 2️⃣ Create a Virtual Environment
 bash
 Copy code
 python -m venv venv
 source venv/bin/activate      # macOS/Linux
 # Windows: venv\Scripts\activate
+
 3️⃣ Install Dependencies
 bash
 Copy code
 pip install -r requirements.txt
+
 4️⃣ Configure Environment Variables
 Copy .env.example → .env and fill in your values:
 
@@ -119,7 +122,8 @@ Copy code
 DEEPAI_API_KEY=
 PICPURIFY_API_KEY=
 SIGHTENGINE_API_KEY=
-▶️ How to Run
+
+## ▶️ How to Run
 Local Development
 bash
 Copy code
@@ -143,9 +147,9 @@ Add the model file path to .gitignore to prevent large uploads.
 ## 🧩 Building and Integrating Your Own Model
 If you’d like to train your own NSFW detection or classification model, you can easily integrate it into this project.
 
-Step 1 — Train a Model (Example using TensorFlow)
+**Step 1 **— Train a Model (Example using TensorFlow)
 python
-Copy code
+
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -173,7 +177,8 @@ val_data = train_datagen.flow_from_directory(
 
 model.fit(train_data, validation_data=val_data, epochs=10)
 model.save('models/final_model/model.h5')
-Step 2 — Integrate the Model
+
+**Step 2 **— Integrate the Model
 In app/model_utils.py:
 
 python
@@ -184,7 +189,8 @@ def load_local_model():
     model = load_model("models/final_model/model.h5")
     print("✅ Custom model loaded successfully.")
     return model
-Step 3 — Test
+    
+**Step 3 **— Test
 bash
 Copy code
 python app/main.py
@@ -286,6 +292,7 @@ FastAPI Framework
 **Sachin Deepak S**  
 📧 [sachindeepak4181@gmail.com](mailto:sachindeepak4181@gmail.com)  
 🌐 [LinkedIn](https://www.linkedin.com/in/sachin-deepak-s/) | [GitHub](https://github.com/Sachin-deepak-S)
+
 
 ## ⚠️ Disclaimer & Ethical Use
 This project is intended for educational and research purposes only.
