@@ -114,7 +114,7 @@ install model : https://github.com/Sachin-deepak-S/Safe-Vision-Hub/releases
 4️⃣ Configure Environment Variables
 
 Copy .env.example → .env and fill in your values:
-
+```Bash
 JWT_SECRET=your_secret_key
 
 ADMIN_EMAIL=you@example.com
@@ -130,17 +130,17 @@ DEEPAI_API_KEY=
 PICPURIFY_API_KEY=
 
 SIGHTENGINE_API_KEY=
-
+```
 ## ▶ How to Run
 
 Local Development
-
+```Bash
 Then visit → http://localhost:8000
-
+```
 Production (Gunicorn)
-
+```Bash
 gunicorn -w 4 -b 0.0.0.0:8000 app.main:app
-
+```
 ## 📁 Model & Weights
 Default model path: models/final_model/model.h5
 
@@ -154,8 +154,7 @@ Add the model file path to .gitignore to prevent large uploads.
 If you’d like to train your own NSFW detection or classification model, you can easily integrate it into this project.
 
 Step 1 — Train a Model (Example using TensorFlow)
-python
-
+```Bash
 from tensorflow.keras.models import Sequential
 
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
@@ -200,11 +199,11 @@ val_data = train_datagen.flow_from_directory(
 model.fit(train_data, validation_data=val_data, epochs=10)
 
 model.save('models/final_model/model.h5')
-
+```
 Step 2 — Integrate the Model
 
 In app/model_utils.py:
-
+```Bash
 from tensorflow.keras.models import load_model
 
 def load_local_model():
@@ -214,7 +213,7 @@ def load_local_model():
     print("✅ Custom model loaded successfully.")
     
     return model
-    
+```
 Step 3 — Test
 
 Upload an image in the web UI to verify your model predictions.
@@ -254,25 +253,25 @@ Click Deploy and test your app live.
 
 ## 📖 API Documentation
 FastAPI auto-generates interactive documentation:
-
+```Bash
 Swagger → http://localhost:8000/docs
 
 ReDoc → http://localhost:8000/redoc
-
+```
 ## 🤝 Contributing
 Contributions are always welcome!
 
 Fork this repository
 
 Create your feature branch
-
+```Bash
 git checkout -b feature/my-feature
-
+```
 Commit your changes
 
-
+```Bash
 git commit -m "Add new feature"
-
+```
 Push and open a pull request 🚀
 
 ## 📝 License
