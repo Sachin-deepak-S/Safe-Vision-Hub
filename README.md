@@ -90,25 +90,27 @@ Safe-Vision-Hub/
 ## 🚀 Installation & Setup
 
 ### 1️⃣ Clone the Repository
+```Bash
 
 git clone https://github.com/Sachin-deepak-S/Safe-Vision-Hub.git
 
 cd Safe-Vision-Hub
-
+```
 2️⃣ Create a Virtual Environment
-
+```Bash
 python -m venv venv
 
 source venv/bin/activate
 
 # Windows: venv\Scripts\activate
+```
 
 3️⃣ Install Dependencies
-
+```Bash
 pip install -r requirements.txt
 
 install model : https://github.com/Sachin-deepak-S/Safe-Vision-Hub/releases
-
+```
 4️⃣ Configure Environment Variables
 
 Copy .env.example → .env and fill in your values:
